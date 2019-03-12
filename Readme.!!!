@@ -1,0 +1,31 @@
+I'm not an addon developer, but I like the TBag addon, so I decided to make the following changes:
+1. For definition of a category of items are used ID of properties of subjects, not text expressions.
+Thus, the addon will now correctly sort the items in any, not even released, WOW expansions.
+Also, the addon must correctly sort items in any WOW localization, except for some items, which are not sortable by ID.
+2. From the addon everything that is related to the professions has been removed.
+
+The addon may contain errors that are present in it before making these changes, but I did not find these errors.
+Since I do not have enough experience in developing addons, I do not promise to support this addon.
+
+For the correct operation of the addon, you must delete the old files with the settings TBag.lua and TBag.lua.bak located in:
+..\World of Warcraft\WTF\Account\YOUR_ACCOUNT\SavedVariables
+
+More information about the original addon:
+https://wow.curseforge.com/projects/tbag-shefki
+https://www.curseforge.com/wow/addons/tbag-shefki
+
+Я не разработчик аддонов, но мне нравится аддон TBag, поэтому я решил внести в него следующие изменения:
+1. Для определения категории предметов используются не текстовые выражения, а id свойств предметов.
+Таким образом аддон теперь будет правильно сортировать предметы в любом, даже не вышедшем, дополнении WOW.
+Также аддон должен правильно сортировать предметы в любой локализации WOW, за исключением некоторых предметов, сортировка которых по id невозможна.
+2. Из аддона было удалено всё, что связано с профессиями, так как необходимось в профессиях отпала по причине, указанной в пункте 1.
+
+Аддон, возможно, содержит ошибки, присутствующие в нем до внесения указанных изменений, но мной эти ошибки выявлены не были.
+Так как я не обладаю достаточным опытом разработки аддонов, поддрежку аддона TBag не обещаю.
+
+Для правильной работы аддона необходимо удалить старые файлы с настройками TBag.lua и TBag.lua.bak, расположенные в:
+..\World of Warcraft\WTF\Account\YOUR_ACCOUNT\SavedVariables
+
+Больше информации по оригинальному аддону:
+https://wow.curseforge.com/projects/tbag-shefki
+https://www.curseforge.com/wow/addons/tbag-shefki
