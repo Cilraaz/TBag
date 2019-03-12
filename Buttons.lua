@@ -351,17 +351,8 @@ local BarButton = TBag.BarButton
 function BarButton:OnLoad()
   self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
-  -- Stock frame from ItemButtonTemplate is used here for
+  -- Stock frame from ItemButton is used here for
   -- the bar number.  Adjust it to center the number.
-  print("Inside BarButton OnLoad")
-  local jctest = _G[self:GetName()]
-  print("self: "..self)
-  print("jctest: "..jctest)
-  for k, v in pairs(jctest) do
-    print("Key is type: "..type(k))
-    print("Key: "..k)
-    --print("Value: "..v)
-  end
   local stock = _G[self:GetName().."Stock"]
   stock:SetFont("Fonts\\ARIALN.TTF", 18, "OUTLINE")
   stock:SetTextColor(1,0,0.25,1)
@@ -434,7 +425,7 @@ function BagButton:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
-  -- Stock frame from ItemButtonTemplate is used here for
+  -- Stock frame from ItemButton is used here for
   -- the counts on the bag.  Adjust it to center the numbers.
   local stock = _G[self:GetName().."Stock"]
   stock:SetFont("Fonts\\ARIALN.TTF", 18, "OUTLINE")

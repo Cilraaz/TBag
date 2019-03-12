@@ -58,7 +58,7 @@
     </Scripts>
   </Button>
 
-  <Button name="TBag_BarButtonTemplate" inherits="ItemButtonTemplate" hidden="true" virtual="true">
+  <Button name="TBag_BarButtonTemplate" inherits="ItemButton" hidden="true" virtual="true">
     <Size><AbsDimension x="40" y="40"/></Size>
     <Layers>
       <Layer frameStrata="BORDER">
@@ -81,7 +81,7 @@
     </Scripts>
   </Button>
 
-  <CheckButton name="TBag_BagButtonTemplate" inherits="ItemButtonTemplate" virtual="true">
+  <CheckButton name="TBag_BagButtonTemplate" inherits="ItemButton" virtual="true">
     <Frames>
       <Frame name="$parentSpotlight" setAllPoints="true">
         <Layers>
