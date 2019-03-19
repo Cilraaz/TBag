@@ -91,7 +91,8 @@ function MainFrame:OnMouseDown(button)
 end
 
 function MainFrame:OnHide()
-  PlaySound(863)
+  --PlaySound(863)
+  PlaySoundFile("Interface/AddOns/TBag/sounds/bag_open_close.wav")
   self:DragStop()
 
   -- Unhighlight any bags that are still highlighted.
@@ -114,7 +115,8 @@ function MainFrame:OnHide()
 end
 
 function MainFrame:OnShow()
-  PlaySound(862)
+  --PlaySound(862)
+  PlaySoundFile("Interface/AddOns/TBag/sounds/bag_open_close.wav")
 
   -- Always default to the current player
   self:SetPlayer(TBag.PLAYERID)
