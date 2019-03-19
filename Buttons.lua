@@ -351,7 +351,7 @@ local BarButton = TBag.BarButton
 function BarButton:OnLoad()
   self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
-  -- Stock frame from ItemButton is used here for
+  -- Stock frame from ItemButtonTemplate is used here for
   -- the bar number.  Adjust it to center the number.
   local stock = _G[self:GetName().."Stock"]
   stock:SetFont("Fonts\\ARIALN.TTF", 18, "OUTLINE")
@@ -425,7 +425,7 @@ function BagButton:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
-  -- Stock frame from ItemButton is used here for
+  -- Stock frame from ItemButtonTemplate is used here for
   -- the counts on the bag.  Adjust it to center the numbers.
   local stock = _G[self:GetName().."Stock"]
   stock:SetFont("Fonts\\ARIALN.TTF", 18, "OUTLINE")

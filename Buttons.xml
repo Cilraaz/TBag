@@ -19,7 +19,7 @@
       </Scripts>
     </Button>
 
-    <Button name="TBag_ItemButtonTemplate" inherits="ContainerFrameItemButtonTemplate" hidden="true" virtual="true">
+    <ItemButton name="TBag_ItemButtonTemplate" inherits="ContainerFrameItemButtonTemplate" hidden="true" virtual="true">
       <Size><AbsDimension x="40" y="40"/></Size>
       <Frames>
         <Button name="$parent_EditButton" inherits="TBag_EditButtonTemplate"/>
@@ -56,9 +56,9 @@
         TBag.ItemButton.OnLeave(self, motion);
       </OnLeave>
     </Scripts>
-  </Button>
+  </ItemButton>
 
-  <Button name="TBag_BarButtonTemplate" inherits="ItemButton" hidden="true" virtual="true">
+  <Button name="TBag_BarButtonTemplate" inherits="TBagItemButtonTemplate" hidden="true" virtual="true">
     <Size><AbsDimension x="40" y="40"/></Size>
     <Layers>
       <Layer frameStrata="BORDER">
@@ -81,7 +81,7 @@
     </Scripts>
   </Button>
 
-  <CheckButton name="TBag_BagButtonTemplate" inherits="ItemButton" virtual="true">
+  <CheckButton name="TBag_BagButtonTemplate" inherits="TBagItemButtonTemplate" virtual="true">
     <Frames>
       <Frame name="$parentSpotlight" setAllPoints="true">
         <Layers>

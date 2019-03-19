@@ -492,7 +492,7 @@ function TBag:CreateDummyBag(bag, template)
     for slot = 1, self:GetBagMaxItems(bag) do
       buttonname = self:GetBagItemButtonName(bag, slot);
       if not (_G[buttonname]) then
-        local button = CreateFrame("Button", buttonname, dbag, template);
+        local button = CreateFrame("ItemButton", buttonname, dbag, template);
         button:SetID(slot);
         button:Hide();
         button:SetFrameLevel(level)
@@ -2156,10 +2156,9 @@ function TBag:SetInventoryItem(tt, playerid, itemlink, bag, slot, suffix)
       local level = TBag:GetPlayerInfo(playerid,TBag.G_BASIC)[TBag.S_LEVEL] or
                     UnitLevel("player")
       itemlink = itemlink..":"..level..(suffix and ":" or "")..(suffix or "")
-      --print("itemlink = "..itemlink)
-      tt:SetHyperlink(itemlink);
-      self:UpdateHearth(tt, itemlink, playerid);
     end
+    tt:SetHyperlink(itemlink);
+    self:UpdateHearth(tt, itemlink, playerid);
   end
 
   return hasCooldown, repairCost;
