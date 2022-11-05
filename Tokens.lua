@@ -1,4 +1,4 @@
-local _G = getfenv(0)
+--[[local _G = getfenv(0)
 local TBag = _G.TBag
 local L = TBag.LOCALE
 TBag.Tokens = {}
@@ -136,10 +136,14 @@ function Tokens.Update(frame)
       frame:Show()
       i = i + 1
     end
-    if i > MAX_WATCHED_TOKENS then return end
+    --if i > MAX_WATCHED_TOKENS then return end
+    if i > 8 then return end
   end
-  for n = i, MAX_WATCHED_TOKENS do
-    _G[framename.."Token"..n]:Hide()
+  --for n = i, MAX_WATCHED_TOKENS do
+  for n = i, 8 do
+    if _G[framename.."Token"..n] then
+      _G[framename.."Token"..n]:Hide()
+    end
     if n == 1 then
       frame:Hide()
     end
@@ -163,8 +167,9 @@ end
 -- Turn on the hook, we have to delay doing this until variables
 -- are loaded to avoid problems.
 function Tokens.Enable()
-  hooksecurefunc("BackpackTokenFrame_Update",Tokens.Hook)
+  hooksecurefunc("BackpackTokenFrame.Update",Tokens.Hook)
 end
 
-TokenFramePopupBackpackCheckBoxText:SetText(L["Show on TBag"])
+TokenFramePopup.BackpackCheckBox.Text:SetText(L["Show on TBag"])
 TOKEN_SHOW_ON_BACKPACK = L["Checking this option will allow you to track this currency type in TBag for this character.\n\nYou can also Shift-click a currency to add or remove it from being tracked in TBag."]
+]]

@@ -40,7 +40,7 @@
     <ThumbTexture name="$parentThumb" file="Interface\Buttons\UI-SliderBar-Button-Horizontal">
       <Size><AbsDimension x="32" y="32"/></Size>
     </ThumbTexture>
-    <Layers level="OVERLAY">
+    <Layers>
       <Layer>
         <FontString name="$parent_disp_text" inherits="GameFontNormalSmall"/>
       </Layer>

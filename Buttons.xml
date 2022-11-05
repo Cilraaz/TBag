@@ -32,13 +32,15 @@
       </Frame>
     </Frames>
     <Layers>
-      <Layer frameStrata="BORDER">
+      <Layer>
         <Texture name="$parent_bkgr" inherits="TBag_ButtonBkgrTemplate"/>
       </Layer>
     </Layers>
     <Scripts>
       <OnLoad>
-        ContainerFrameItemButton_OnLoad(self);
+        <!-- ContainerFrameItemButton_OnLoad(self); -->
+        self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+        self:RegisterForDrag("LeftButton")
         self.UpdateTooltip = TBag.ItemButton.OnEnter;
         local newitem = _G[self:GetName() .. "NewItemTexture"]
         if newitem then
@@ -61,7 +63,7 @@
   <Button name="TBag_BarButtonTemplate" inherits="TBagItemButtonTemplate" hidden="true" virtual="true">
     <Size><AbsDimension x="40" y="40"/></Size>
     <Layers>
-      <Layer frameStrata="BORDER">
+      <Layer>
         <Texture name="$parent_bkgr" inherits="TBag_ButtonBkgrTemplate"/>
       </Layer>
     </Layers>
@@ -90,7 +92,7 @@
           </Layer>
         </Layers>
       </Frame>
-      <Model name="$parentItemAnim" inherits="ItemAnimTemplate" setAllPoints="true">
+      <Model name="$parentItemAnim" setAllPoints="true">
         <Scripts>
           <OnEvent>
             TBag.BagButton.ItemAnimOnEvent(self,event,...)

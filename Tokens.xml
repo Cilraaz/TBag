@@ -5,7 +5,7 @@
       <AbsDimension x="50" y="12"/>
     </Size>
     <Layers>
-      <Layer leve="BACKGROUND">
+      <Layer>
         <FontString name="$parentCount" inherits="GameFontHighlightSmall" justifyH="RIGHT">
           <Size x="38" y="10"/>
           <Anchors>
@@ -33,7 +33,7 @@
         self.count = _G[name.."Count"]
       </OnLoad>
       <OnEnter>
-        TBag.Tokens.Button_OnEnter(self)
+        <!-- TBag.Tokens.Button_OnEnter(self) -->
       </OnEnter>
       <OnLeave>
         GameTooltip:Hide()
@@ -70,7 +70,7 @@
     </Frames>
     <Scripts>
       <OnShow>
-        TBag.Tokens.Update(self)
+        <!-- TBag.Tokens.Update(self) -->
       </OnShow>
     </Scripts>
   </Frame>

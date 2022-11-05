@@ -119,7 +119,7 @@ end
 
 function TBag:PLAYER_ENTERING_WORLD(event)
   -- One time extra scan to avoid bogus data on swapping characters
-  TBag.Tokens.Scan()
+  --TBag.Tokens.Scan()
   self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 

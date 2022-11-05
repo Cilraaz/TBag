@@ -72,7 +72,7 @@ function Bank:SetPlayer(playerid)
     self.CACHE_REQ = TBag.REQ_MUST
   end
   self.playerid = playerid;
-  TBag.Tokens.Update(TBnkFrame_TokenFrame)
+  --TBag.Tokens.Update(TBnkFrame_TokenFrame)
 end
 
 -- Set reset=1 to restore default values
