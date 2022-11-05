@@ -206,9 +206,11 @@ function Bank:init(reset)
 
   TBag:BuildBarClassList(self.BC_LIST, cfg);
 
+  TBag:ClearNewItm(TBnkItm[self.playerid], self.bags)
+
   -- Do one sorting to init the baritm array
   self.BARITM = TBag:SortItmCache(cfg,
-    self.playerid, TBnkItm[self.playerid], self.BARITM, self.bags);
+    self.playerid, TBnkItm[self.playerid], self.BARITM, self.bags, self.atbank);
   TBag:LayoutWindow(self)
 end
 
@@ -304,25 +306,25 @@ function Bank.Button_HighlightToggle_OnClick(self)
     TBag:ClearSearch();
     if (GameTooltip:GetOwner() == TBnk_Button_HighlightToggle) then
       if (TBnkFrame.highlight_new == 1) then
-        GameTooltip_AddNewbieTip(self, L["Normal"], 1.0, 1.0, 1.0,
-                                 L["Stop highlighting new items."]);
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+        GameTooltip_SetTitle(GameTooltip, L["Normal"]);
       else
-        GameTooltip_AddNewbieTip(self, L["Highlight New"], 1.0, 1.0, 1.0,
-                                 L["Highlight items marked as new."]);
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+        GameTooltip_SetTitle(GameTooltip, L["Highlight New"]);
       end
     end
     return;
   elseif (TBnkFrame.hilight_new == 0) then
     TBnkFrame.hilight_new = 1;
     if (GameTooltip:GetOwner() == TBnk_Button_HighlightToggle) then
-      GameTooltip_AddNewbieTip(self, L["Normal"], 1.0, 1.0, 1.0,
-                               L["Stop highlighting new items."]);
+      GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+      GameTooltip_SetTitle(GameTooltip, L["Normal"]);
     end
   else
     TBnkFrame.hilight_new = 0;
     if (GameTooltip:GetOwner() == TBnk_Button_HighlightToggle) then
-      GameTooltip_AddNewbieTip(self, L["Highlight New"], 1.0, 1.0, 1.0,
-                               L["Highlight items marked as new."]);
+      GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+      GameTooltip_SetTitle(GameTooltip, L["Highlight New"]);
     end
   end
   TBnkFrame:UpdateWindow();
@@ -371,16 +373,16 @@ function Bank.Button_MoveLockToggle_OnClick(self)
     TBnkLockNorm:SetTexture("Interface\\AddOns\\TBag\\images\\LockButton-Unlocked-Up");
     TBnkLockPush:SetTexture("Interface\\AddOns\\TBag\\images\\LockButton-Unlocked-Down");
     if (GameTooltip:GetOwner() == TBnk_Button_MoveLockToggle) then
-      GameTooltip_AddNewbieTip(self, L["Lock Window"], 1.0, 1.0, 1.0,
-                               L["Prevent window from being moved by dragging it."]);
+      GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+      GameTooltip_SetTitle(GameTooltip, L["Lock Window"]);
     end
   else
     TBnkFrame.cfg["moveLock"] = 0;
     TBnkLockNorm:SetTexture("Interface\\AddOns\\TBag\\images\\LockButton-Locked-Up");
     TBnkLockPush:SetTexture("Interface\\AddOns\\TBag\\images\\LockButton-Locked-Down");
     if (GameTooltip:GetOwner() == TBnk_Button_MoveLockToggle) then
-      GameTooltip_AddNewbieTip(self, L["Unlock Window"], 1.0, 1.0, 1.0,
-                               L["Allow window to be moved by dragging it."]);
+      GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+      GameTooltip_SetTitle(GameTooltip, L["Unlock Window"]);
     end
   end
 end
@@ -412,12 +414,12 @@ function Bank.SlotTargetButton_OnClick(self, button)
     end
 
   elseif ( button == "RightButton" ) then
-    HideDropDownMenu(1);
+    TBag.LibDD:HideDropDownMenu(1);
     TBnkFrame.RightClickMenu_mode = "bar";
     TBnkFrame.RightClickMenu_opts = {
   [TBag.I_BAR] = bar
   };
-    ToggleDropDownMenu(1, nil, TBnkFrame_RightClickMenu, self:GetName(), -50, 0);
+    TBag.LibDD:ToggleDropDownMenu(1, nil, TBnkFrame_RightClickMenu, self:GetName(), -50, 0);
 
   end
   end
@@ -437,7 +439,7 @@ function Bank.RightClick_DeleteItemOverride(self)
     local id = TBag:GetItemID(itm[TBag.I_ITEMLINK]);
     if TBnkFrame.cfg["item_overrides"][id] ~= nil then
       TBnkFrame.cfg["item_overrides"][id] = nil;
-      HideDropDownMenu(1);
+      TBag.LibDD:HideDropDownMenu(1);
 
       -- resort will force a window redraw as well
       TBnkFrame:UpdateWindow(TBag.REQ_MUST);
@@ -458,8 +460,8 @@ function Bank.RightClick_SetItemOverride(self)
   itm = TBnkItm[TBnkFrame.playerid][bag][slot];
 
   TBnkFrame.cfg["item_overrides"][TBag:GetItemID(itm[TBag.I_ITEMLINK])] = new_barclass;
-  HideDropDownMenu(2);
-  HideDropDownMenu(1);
+  TBag.LibDD:HideDropDownMenu(2);
+  TBag.LibDD:HideDropDownMenu(1);
 
   TBnkFrame:UpdateWindow(TBag.REQ_MUST);
   end
@@ -469,6 +471,7 @@ function Bank:SetTopLeftButton_Anchors()
   local buttons = {
     "TBnk_Button_HighlightToggle",
     "TBnk_Button_ChangeEditMode",
+    "TBnk_Button_Settings",
     "TBnk_Button_Reload",
     "TBnk_Button_DepositReagent",
   };
@@ -788,22 +791,22 @@ function Bank.RightClickMenu_populate(self, level)
     -- top level of menu
 
     info = { ["text"] = itm[TBag.I_NAME], ["notClickable"] = 1, ["isTitle"] = 1, ["notCheckable"] = nil };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = { ["disabled"] = 1 };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = { ["text"] = string.format(L["Current Category: %s"],itm[TBag.I_CAT]), ["notClickable"] = 1, ["isTitle"] = 1, ["notCheckable"] = nil };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = { ["disabled"] = 1 };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = { ["text"] = L["Assign item to category:"], ["hasArrow"] = 1, ["value"] = "override_placement" };
     if (TBnkFrame.cfg["item_overrides"][id] ~= nil) then
   info["checked"] = 1;
     end
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = {
   ["text"] = L["Use default category assignment"],
@@ -813,17 +816,17 @@ function Bank.RightClickMenu_populate(self, level)
     if (TBnkFrame.cfg["item_overrides"][id] == nil) then
   info["checked"] = 1;
     end
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     if (TBnk_SHOWITEMDEBUGINFO==1) then
   info = { ["disabled"] = 1 };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = { ["text"] = L["Debug Info: "], ["hasArrow"] = 1, ["value"] = "show_debug" };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
     end
   elseif (level == 2) then
-    if ( UIDROPDOWNMENU_MENU_VALUE == "override_placement" ) then
+    if ( L_UIDROPDOWNMENU_MENU_VALUE == "override_placement" ) then
   for i = 1, TBag.BAR_MAX do
   info = {
     ["text"] = string.format(L["Categories within bar %d"],i);
@@ -834,32 +837,32 @@ function Bank.RightClickMenu_populate(self, level)
   nil) and (TBag:GetCat(TBnkFrame.cfg, TBnkFrame.cfg["item_overrides"][id]) == i) ) then
     info["checked"] = 1;
   end
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
   end
-    elseif ( UIDROPDOWNMENU_MENU_VALUE == "show_debug" ) then
+    elseif ( L_UIDROPDOWNMENU_MENU_VALUE == "show_debug" ) then
   for key, value in pairs(itm) do
   if (value == nil) then
     info = { ["text"] = "|cFFFF7FFF"..key.."|r = |cFF007FFFNil|r", ["notClickable"] = 1 };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
   else
     if ( (type(value) == "number") or (type(value) == "string") ) then
   info = { ["text"] = "|cFFFF7FFF"..key.."|r = |cFF007FFF"..value.."|r", ["notClickable"] = 1 };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
     else
   info = { ["text"] = "|cFFFF7FFF"..key.."|r|cFF338FFF=>Array()|r", ["notClickable"] = 1 };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
   for key2, value2 in pairs(value) do
   info = { ["text"] = "  |cFFFF7FFF["..key2.."]|r = |cFF338FFF"..value2.."|r", ["notClickable"] = 1 };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
   end
     end
   end
   end
     end
   elseif (level == 3) then
-    if ( UIDROPDOWNMENU_MENU_VALUE ~= nil ) then
-  if ( UIDROPDOWNMENU_MENU_VALUE["opt"] == "override_placement_select" ) then
-  for key, barclass in pairs(TBnkFrame.BC_LIST[UIDROPDOWNMENU_MENU_VALUE["select_bar"]]) do
+    if ( L_UIDROPDOWNMENU_MENU_VALUE ~= nil ) then
+  if ( L_UIDROPDOWNMENU_MENU_VALUE["opt"] == "override_placement_select" ) then
+  for key, barclass in pairs(TBnkFrame.BC_LIST[L_UIDROPDOWNMENU_MENU_VALUE["select_bar"]]) do
     info = {
   ["text"] = barclass;
   ["value"] = { [TBag.I_BAG]=bag, [TBag.I_SLOT]=slot, ["barclass"]=barclass },
@@ -868,7 +871,7 @@ function Bank.RightClickMenu_populate(self, level)
     if (TBnkFrame.cfg["item_overrides"][id] == barclass) then
   info["checked"] = 1;
     end
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
   end
   end
     end
@@ -882,10 +885,10 @@ function Bank.RightClickMenu_populate(self, level)
   bar = TBnkFrame.RightClickMenu_opts[TBag.I_BAR];
 
   info = { ["text"] = string.format(L["|c%sBar |r|c%s%s|r"],TBag.C_INST,TBag.C_BAR,bar), ["notClickable"] = 1, ["isTitle"] = 1, ["notCheckable"] = nil };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = { ["disabled"] = 1 };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   for key, value in pairs(TBnkFrame.BC_LIST[bar]) do
     info = {
@@ -898,14 +901,14 @@ function Bank.RightClickMenu_populate(self, level)
   TBnkFrame:UpdateWindow();
     end
     };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
   end
 
   info = { ["disabled"] = 1 };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = { ["text"] = L["Sort Mode:"], ["notClickable"] = 1, ["isTitle"] = 1, ["notCheckable"] = nil };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   for key, value in pairs({
     [TBag.SORTBY_NONE] = L["No sort"],
@@ -928,14 +931,14 @@ function Bank.RightClickMenu_populate(self, level)
   end,
   ["checked"] = checked
   };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
   end
 
   info = { ["disabled"] = 1 };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = { ["text"] = L["Highlight new items:"], ["notClickable"] = 1, ["isTitle"] = 1, ["notCheckable"] = nil };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   for key,value in pairs({
     [0] = L["Don't tag new items"],
@@ -958,14 +961,14 @@ function Bank.RightClickMenu_populate(self, level)
     end,
   ["checked"] = checked
   };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
   end
 
   info = { ["disabled"] = 1 };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = { ["text"] = L["Hide Bar:"], ["notClickable"] = 1, ["isTitle"] = 1, ["notCheckable"] = nil };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   for key,value in pairs({
     [0] = L["Show items assigned to this bar"],
@@ -988,22 +991,22 @@ function Bank.RightClickMenu_populate(self, level)
     end,
   ["checked"] = checked
   };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
   end
 
   info = { ["disabled"] = 1 };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = { ["text"] = L["Color:"], ["notClickable"] = 1, ["isTitle"] = 1, ["notCheckable"] = nil };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = TBag:MakeColorPickerInfo(TBnkFrame.cfg, "bkgr_", bar,
-    string.format(L["Background Color for Bar %d"],bar), function () TBnkFramer:UpdateWindow() end);
-  UIDropDownMenu_AddButton(info, level);
+    string.format(L["Background Color for Bar %d"],bar), function () TBnkFrame:UpdateWindow() end);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = TBag:MakeColorPickerInfo(TBnkFrame.cfg, "brdr_", bar,
     string.format(L["Border Color for Bar %d"],bar), function () TBnkFrame:UpdateWindow() end);
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   -------------------------------------------------------------------------------------------------
   ------------------------ MAIN WINDOW CONTEXT MENU -----------------------------------------------
@@ -1012,22 +1015,22 @@ function Bank.RightClickMenu_populate(self, level)
   if (level == 1) then
 
     info = { ["text"] = string.format(L["TBag v%s"],TBag.VERSION), ["notClickable"] = 1, ["isTitle"] = 1, ["notCheckable"] = nil };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     if (TBnkFrame.atbank == 0) then
       info = { ["disabled"] = 1 };
-      UIDropDownMenu_AddButton(info, level);
+      TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
       info = {
         ["text"] = L["Select Character"];
         ["value"] = { ["opt"]="select_character" },
         ["hasArrow"] = 1
         };
-      UIDropDownMenu_AddButton(info, level);
+      TBag.LibDD:UIDropDownMenu_AddButton(info, level);
     end
 
     info = { ["disabled"] = 1 };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = {
   ["text"] = L["Edit Mode"],
@@ -1037,7 +1040,7 @@ function Bank.RightClickMenu_populate(self, level)
     if (TBnkFrame.edit_mode == 1) then
       info["checked"] = 1;
     end
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = {
   ["text"] = L["Lock window"],
@@ -1047,24 +1050,24 @@ function Bank.RightClickMenu_populate(self, level)
     if (TBnkFrame.cfg["moveLock"] == 0) then
   info["checked"] = 1;
     end
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = {
   ["text"] = L["Reload and Sort"],
   ["value"] = nil,
   ["func"] = TBnkFrame.Button_Reload_OnClick
   };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = {
   ["text"] = REAGENTBANK_DEPOSIT,
   ["value"] = nil,
   ["func"] = TBnkFrame.Button_DepositReagent_OnClick
   };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = { ["disabled"] = 1 };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = {
   ["value"] = nil,
@@ -1078,7 +1081,7 @@ function Bank.RightClickMenu_populate(self, level)
         info["checked"] = 1;
       end
     end
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = {
   ["text"] = L["Reset NEW tag"],
@@ -1099,10 +1102,10 @@ function Bank.RightClickMenu_populate(self, level)
     TBnkFrame:UpdateWindow();
   end
   };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = { ["disabled"] = 1 };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = {
   ["text"] = L["Advanced Configuration"],
@@ -1111,10 +1114,10 @@ function Bank.RightClickMenu_populate(self, level)
     TBnk_OptsFrame:Show();
   end
   };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info = { ["disabled"] = 1 };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
 
     info = {
@@ -1122,45 +1125,45 @@ function Bank.RightClickMenu_populate(self, level)
       ["value"] = { ["opt"]="set_scale" },
       ["hasArrow"] = 1
     };
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
       info = { ["disabled"] = 1 };
-      UIDropDownMenu_AddButton(info, level);
+      TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
       info = {
         ["text"] = L["Set Colors"];
         ["value"] = { ["opt"]="set_colors" },
         ["hasArrow"] = 1
         };
-      UIDropDownMenu_AddButton(info, level);
+      TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
       info = { ["disabled"] = 1 };
-      UIDropDownMenu_AddButton(info, level);
+      TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
       info = {
         ["text"] = L["Anchor"];
         ["value"] = { ["opt"]="anchor" },
         ["hasArrow"] = 1
         };
-      UIDropDownMenu_AddButton(info, level);
+      TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
       info = { ["disabled"] = 1 };
-      UIDropDownMenu_AddButton(info, level);
+      TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
       info = {
         ["text"] = L["Hide"];
         ["value"] = { ["opt"]="hide_frames" },
         ["hasArrow"] = 1
         };
-      UIDropDownMenu_AddButton(info, level);
+      TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
       info = { ["disabled"] = 1 };
-      UIDropDownMenu_AddButton(info, level);
+      TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
 
     elseif (level == 2) then
-      if (UIDROPDOWNMENU_MENU_VALUE ~= nil) then
-        if (UIDROPDOWNMENU_MENU_VALUE["opt"] == "set_scale") then
+      if (L_UIDROPDOWNMENU_MENU_VALUE ~= nil) then
+        if (L_UIDROPDOWNMENU_MENU_VALUE["opt"] == "set_scale") then
           for _, value in ipairs(TBag.A_BUTTONSIZE) do
             info = {
               ["text"] = value.."x"..value;
@@ -1181,11 +1184,11 @@ function Bank.RightClickMenu_populate(self, level)
       > -1.0) then
               info["checked"] = 1;
             end
-            UIDropDownMenu_AddButton(info, level);
+            TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           end
-        elseif (UIDROPDOWNMENU_MENU_VALUE["opt"] == "set_colors") then
+        elseif (L_UIDROPDOWNMENU_MENU_VALUE["opt"] == "set_colors") then
           TBag:MakeColorMenu(TBnkFrame.cfg, function () TBnkFrame:UpdateWindow() end, level, TBnkFrame.bags);
-        elseif (UIDROPDOWNMENU_MENU_VALUE["opt"] == "anchor") then
+        elseif (L_UIDROPDOWNMENU_MENU_VALUE["opt"] == "anchor") then
           info = {
             ["text"] = L["TOPLEFT"];
             ["func"] = function ()
@@ -1196,7 +1199,7 @@ function Bank.RightClickMenu_populate(self, level)
               TBnkFrame.cfg["frameYRelativeTo"] == "TOP") then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["TOPRIGHT"];
             ["func"] = function ()
@@ -1207,7 +1210,7 @@ function Bank.RightClickMenu_populate(self, level)
               TBnkFrame.cfg["frameYRelativeTo"] == "TOP") then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["BOTTOMLEFT"];            ["func"] = function ()
                          TBag:SetFrameAnchor (TBnkFrame,TBnkFrame.cfg,"BOTTOM","LEFT")
@@ -1217,7 +1220,7 @@ function Bank.RightClickMenu_populate(self, level)
               TBnkFrame.cfg["frameYRelativeTo"] == "BOTTOM") then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["BOTTOMRIGHT"];
             ["func"] = function ()
@@ -1228,8 +1231,8 @@ function Bank.RightClickMenu_populate(self, level)
               TBnkFrame.cfg["frameYRelativeTo"] == "BOTTOM") then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
-        elseif (UIDROPDOWNMENU_MENU_VALUE["opt"] == "hide_frames") then
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
+        elseif (L_UIDROPDOWNMENU_MENU_VALUE["opt"] == "hide_frames") then
           info = {
             ["text"] = L["Hide Player Dropdown"];
             ["func"] = TBnkFrame.Toggle_UserDropdown;
@@ -1238,7 +1241,7 @@ function Bank.RightClickMenu_populate(self, level)
           if (TBnkFrame.cfg["show_userdropdown"] == 0) then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["Hide Highlight Button"];
             ["func"] = TBnkFrame.Toggle_HighlightButton;
@@ -1247,7 +1250,7 @@ function Bank.RightClickMenu_populate(self, level)
           if (TBnkFrame.cfg["show_hilightbutton"] == 0) then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["Hide Edit Button"];
             ["func"] = TBnkFrame.Toggle_EditButton;
@@ -1256,7 +1259,7 @@ function Bank.RightClickMenu_populate(self, level)
           if (TBnkFrame.cfg["show_editbutton"] == 0) then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["Hide Re-sort Button"];
             ["func"] = TBnkFrame.Toggle_ReloadButton;
@@ -1265,7 +1268,7 @@ function Bank.RightClickMenu_populate(self, level)
           if (TBnkFrame.cfg["show_reloadbutton"] == 0) then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["Hide Reagent Deposit Button"];
             ["func"] = TBnkFrame.Toggle_DepositReagentButton;
@@ -1274,7 +1277,7 @@ function Bank.RightClickMenu_populate(self, level)
           if (TBnkFrame.cfg["show_depositbutton"] == 0) then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["Hide Lock Button"];
             ["func"] = TBnkFrame.Toggle_LockButton;
@@ -1283,7 +1286,7 @@ function Bank.RightClickMenu_populate(self, level)
           if (TBnkFrame.cfg["show_lockbutton"] == 0) then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["Hide Close Button"];
             ["func"] = TBnkFrame.Toggle_CloseButton;
@@ -1292,7 +1295,7 @@ function Bank.RightClickMenu_populate(self, level)
           if (TBnkFrame.cfg["show_closebutton"] == 0) then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["Hide Total"];
             ["func"] = TBnkFrame.Toggle_Total;
@@ -1301,7 +1304,7 @@ function Bank.RightClickMenu_populate(self, level)
           if (TBnkFrame.cfg["show_total"] == 0) then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["Hide Bag Buttons"];
             ["func"] = TBnkFrame.Toggle_BagSlotButtons;
@@ -1310,7 +1313,7 @@ function Bank.RightClickMenu_populate(self, level)
           if (TBnkFrame.cfg["show_bagbuttons"] == 0) then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["Hide Tokens"];
             ["func"] = TBnkFrame.Toggle_Token;
@@ -1319,7 +1322,7 @@ function Bank.RightClickMenu_populate(self, level)
           if (TBnkFrame.cfg["show_tokens"] == 0) then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
           info = {
             ["text"] = L["Hide Money"];
             ["func"] = TBnkFrame.Toggle_Money;
@@ -1328,8 +1331,8 @@ function Bank.RightClickMenu_populate(self, level)
           if (TBnkFrame.cfg["show_money"] == 0) then
             info["checked"] = 1;
           end
-          UIDropDownMenu_AddButton(info, level);
-        elseif (UIDROPDOWNMENU_MENU_VALUE["opt"] == "select_character") then
+          TBag.LibDD:UIDropDownMenu_AddButton(info, level);
+        elseif (L_UIDROPDOWNMENU_MENU_VALUE["opt"] == "select_character") then
           Bank.UserDropdown_Initialize(self, level);
         end
       end
@@ -1341,7 +1344,7 @@ end
 
 -- Main "right click menu"
 function Bank.RightClickMenu_OnLoad(self)
-  UIDropDownMenu_Initialize(self, Bank.RightClickMenu_populate, "MENU");
+  TBag.LibDD:UIDropDownMenu_Initialize(self, Bank.RightClickMenu_populate, "MENU");
 end
 
 Bank.WindowIsUpdating = 0;
@@ -1404,7 +1407,7 @@ function Bank:UpdateWindow(resort_req)
 
   if (resort_req >= TBag.REQ_MUST) then
     self.BARITM = TBag:SortItmCache(self.cfg,
-      self.playerid, TBnkItm[self.playerid], self.BARITM, self.bags);
+      self.playerid, TBnkItm[self.playerid], self.BARITM, self.bags, self.atbank);
     TBag:LayoutWindow(self)
   elseif cache_req > self.CACHE_REQ then
     self.CACHE_REQ = cache_req
@@ -1486,10 +1489,10 @@ end
 
 
 function Bank.UserDropdown_OnLoad(self)
-  UIDropDownMenu_Initialize(self, Bank.UserDropdown_Initialize);
-  UIDropDownMenu_SetSelectedValue(self, TBnkFrame.playerid);
+  TBag.LibDD:UIDropDownMenu_Initialize(self, Bank.UserDropdown_Initialize);
+  TBag.LibDD:UIDropDownMenu_SetSelectedValue(self, TBnkFrame.playerid);
   self.tooltip = L["You are viewing the selected player's bank."];
-  UIDropDownMenu_SetWidth(self, TBag.USERDD_WIDTH)
+  TBag.LibDD:UIDropDownMenu_SetWidth(self, TBag.USERDD_WIDTH)
   -- UIDropDownMenu_SetWidth actually adds 50 to our width, we really only want
   -- 25 to avoid the control running into our buttons on the right.
   self:SetWidth(TBag.USERDD_WIDTH + 25);
@@ -1503,7 +1506,7 @@ end
 
 function Bank.UserDropdown_OnClick(self)
   local this = self or _G.this
-  UIDropDownMenu_SetSelectedValue(TBnk_UserDropdown, this.value);
+  TBag.LibDD:UIDropDownMenu_SetSelectedValue(TBnk_UserDropdown, this.value);
   if ( this.value ) then
     TBnkFrame:SetPlayer(this.value);
   end

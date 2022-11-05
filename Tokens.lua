@@ -25,7 +25,9 @@ function Tokens.GetItemStringFromCurrencyIndex(index)
 end
 
 function Tokens.SetItmFromCurrencyIndex(index,itm)
-  local name, isHeader, isExpand, isUnused, isWatched, count, icon = GetCurrencyListInfo(index)
+  local cI = C_CurrencyInfo.GetCurrencyListInfo(index)
+  local name, isHeader, isExpand, isUnused, isWatched, count, icon =
+	cI.name, cI.isHeader, cI.isHeaderExpanded, cI.isTypeUnused, cI.isShowInBackpack, cI.quantity, cI.iconFileID
 
   if not name then
     return false
@@ -56,7 +58,7 @@ function Tokens.Scan()
   local dbag = TTknItm[TBag.PLAYERID][TBag.D_BAG]
   table.wipe(dbag)
 
-  for i = 1, GetCurrencyListSize() do
+  for i = 1, C_CurrencyInfo.GetCurrencyListSize() do
     n = n + 1
     dbag[n] = {}
     if not Tokens.SetItmFromCurrencyIndex(i,dbag[n]) then
@@ -64,9 +66,9 @@ function Tokens.Scan()
       return
     end
     if dbag[n][TBag.I_HEADER] and not dbag[n][TBag.I_EXPAND] then
-      local size = GetCurrencyListSize()
-      ExpandCurrencyList(i,1)
-      size = GetCurrencyListSize() - size
+      local size = C_CurrencyInfo.GetCurrencyListSize()
+      C_CurrencyInfo.ExpandCurrencyList(i, true)
+      size = C_CurrencyInfo.GetCurrencyListSize() - size
       for j = i+1, i+size do
         n = n + 1
         dbag[n] = {}
@@ -75,7 +77,7 @@ function Tokens.Scan()
           return
         end
       end
-      ExpandCurrencyList(i,0)
+      C_CurrencyInfo.ExpandCurrencyList(i, false)
     end
   end
   scanning = false

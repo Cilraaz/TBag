@@ -191,33 +191,23 @@ L[" /tinv deletechar CHAR SERVER -- clears all cached info for character "] = fa
 L["TBag v%s"] = false
 
 L["Normal"] = false
-L["Stop highlighting new items."] = false
 L["Highlight New"] = false
-L["Highlight items marked as new."] = false
 L["Clear Search"] = false
-L["Stop highlighting search results."] = false
 
 L["Toggle Edit Mode"] = false
-L["Select this option to move classes of items into different 'bars' (the red numbers)."] = false
 
 L["Reload and Sort"] = false
-L["Reloads your items and sorts them."] = false
 
 L["Toggle Bank"] = false
-L["Displays bank contents in a view-only mode.  You may select another player's bank to view from the dropdown."] = false
 
 L["Unlock Window"] = false
-L["Allow window to be moved by dragging it."] = false
 L["Lock Window"] = false
-L["Prevent window from being moved by dragging it."] = false
 
 L["<++>"] = false
 L["Increase Window Size"] = false
-L["Increase the number of columns displayed"] = false
 
 L[">--<"] = false
 L["Decrease Window Size"] = false
-L["Decrease the number of columns displayed"] = false
 
 L["Reset"] = false
 L["Close"] = false
@@ -262,6 +252,7 @@ L["Close Inventory"] = false
 L["Highlight New Items"] = false
 L["Reset NEW tag"] = false
 L["Advanced Configuration"] = false
+L["Configuration"] = false
 L["Set Size"] = false
 L["Set Colors"] = false
 L["Hide"] = false

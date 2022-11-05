@@ -55,8 +55,12 @@ function TBag:BAG_UPDATE_COOLDOWN(event, bag)
   -- if it isn't.  If not argument is passed we have to update the window
   -- regardless.  /sigh
   if not bag then
-    TInvFrame:UpdateWindow()
-    TBnkFrame:UpdateWindow()
+    if not TInvFrame.isMoving then
+      TInvFrame:UpdateWindow()
+    end
+    if not TBnkFrame.isMoving then
+      TBnkFrame:UpdateWindow()
+    end
   else
     if TBag:Member(TInvFrame.bags, bag) then
       TInvFrame:UpdateWindow()

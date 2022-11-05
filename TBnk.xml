@@ -41,11 +41,11 @@
           </OnClick>
           <OnEnter>
             if (TBnkFrame.cfg["moveLock"] == 0) then
-              GameTooltip_AddNewbieTip(self, TBag.LOCALE["Unlock Window"], 1.0, 1.0, 1.0,
-                                       TBag.LOCALE["Allow window to be moved by dragging it."]);
+              GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+              GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Unlock Window"]);
             else
-              GameTooltip_AddNewbieTip(self, TBag.LOCALE["Lock Window"], 1.0, 1.0, 1.0,
-                                       TBag.LOCALE["Prevent window from being moved by dragging it."]);
+              GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+              GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Lock Window"]);
             end
           </OnEnter>
           <OnLeave>
@@ -55,29 +55,13 @@
         </Scripts>
       </Button>
 
-      <Frame name="TBnk_UserDropdown" inherits="TBag_UserDropdownTemplate">
-        <Anchors>
-          <Anchor point="TOPLEFT">
-            <Offset>
-              <AbsDimension x="-10" y="-5"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-        <Scripts>
-          <OnShow>
-            TBnkFrame.UserDropdown_OnLoad(self);
-          </OnShow>
-        </Scripts>
-      </Frame>
-
-
       <Button name="TBnk_Button_HighlightToggle">
         <Size><AbsDimension x="20" y="20"/></Size>
         <NormalTexture file="Interface\Icons\INV_Misc_Gem_Pearl_04" />
         <PushedTexture file="Interface\Icons\INV_Misc_Gem_Pearl_04" />
         <HighlightTexture file="Interface\Icons\INV_Misc_Gem_Pearl_04" alphaMode="ADD" />
         <Anchors>
-        <Anchor point="TOPLEFT" relativeTo="TBnk_UserDropdown" relativePoint="TOPRIGHT">
+        <Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
             <Offset>
               <AbsDimension x="15" y="-3"/>
             </Offset>
@@ -89,11 +73,14 @@
           </OnClick>
           <OnEnter>
             if (TBag.SrchText) then
-              GameTooltip_AddNewbieTip(self, TBag.LOCALE["Clear Search"], 1.0, 1.0, 1.0, TBag.LOCALE["Stop highlighting search results."]);
+              GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+              GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Clear Search"]);
             elseif (TBnkFrame.hilight_new == 0) then
-              GameTooltip_AddNewbieTip(self, TBag.LOCALE["Highlight New"], 1.0, 1.0, 1.0, TBag.LOCALE["Highlight items marked as new."]);
+              GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+              GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Highlight New"]);
             else
-              GameTooltip_AddNewbieTip(self, TBag.LOCALE["Normal"], 1.0, 1.0, 1.0, TBag.LOCALE["Stop highlighting new items."]);
+              GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+              GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Normal"]);
             end
           </OnEnter>
           <OnLeave>
@@ -120,7 +107,37 @@
             TBnkFrame.Button_ChangeEditMode_OnClick(self, button, down);
           </OnClick>
           <OnEnter>
-            GameTooltip_AddNewbieTip(self, TBag.LOCALE["Toggle Edit Mode"], 1.0, 1.0, 1.0, TBag.LOCALE["Select this option to move classes of items into different 'bars' (the red numbers)."]);
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Toggle Edit Mode"]);
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide();
+            ResetCursor();
+          </OnLeave>
+        </Scripts>
+      </Button>
+
+      <Button name="TBnk_Button_Settings">
+        <Size><AbsDimension x="20" y="20"/></Size>
+        <NormalTexture file="Interface\Icons\Inv_misc_gear_08" />
+        <PushedTexture file="Interface\Icons\Inv_misc_gear_08" />
+        <HighlightTexture file="Interface\Icons\Inv_misc_gear_08" alphaMode="ADD" />
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="TBnk_Button_ChangeEditMode" relativePoint="TOPRIGHT">
+            <Offset>
+              <AbsDimension x="2" y="0"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnMouseDown>
+            TBnkFrame.RightClickMenu_mode = "mainwindow"
+            TBnkFrame.RightClickMenu_opts = {}
+            TBag.LibDD:ToggleDropDownMenu(1, nil, TBnkFrame.RightClickMenu, "TBnk_Button_Settings", 20,0)
+          </OnMouseDown>
+          <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Configuration"]);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -135,7 +152,7 @@
         <PushedTexture file="Interface\Icons\Spell_Frost_Stun" />
         <HighlightTexture file="Interface\Icons\Spell_Frost_Stun" alphaMode="ADD" />
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="TBnk_Button_ChangeEditMode" relativePoint="TOPRIGHT">
+          <Anchor point="TOPLEFT" relativeTo="TBnk_Button_Settings" relativePoint="TOPRIGHT">
             <Offset>
               <AbsDimension x="2" y="0"/>
             </Offset>
@@ -146,7 +163,8 @@
             TBnkFrame.Button_Reload_OnClick(self, button, down);
           </OnClick>
           <OnEnter>
-            GameTooltip_AddNewbieTip(self, TBag.LOCALE["Reload and Sort"], 1.0, 1.0, 1.0, TBag.LOCALE["Reloads your items and sorts them."]);
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Reload and Sort"]);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -172,7 +190,8 @@
             TBnkFrame.Button_DepositReagent_OnClick(self, button, down);
           </OnClick>
           <OnEnter>
-            GameTooltip_AddNewbieTip(self, REAGENTBANK_DEPOSIT, 1.0, 1.0, 1.0, TBag.LOCALE["Deposits all Reagents in your bag."]);
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip_SetTitle(GameTooltip, REAGENTBANK_DEPOSIT);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -285,16 +304,42 @@
   <Frame name="TBnkainerFrame10" inherits="TBagainerFrameTemplate" id="10"/>
   <Frame name="TBnkainerFrame11" inherits="TBagainerFrameTemplate" id="11"/>
 
-      <Frame name="$parent_RightClickMenu" inherits="UIDropDownMenuTemplate" id="1" hidden="true">
-        <Scripts>
-          <OnLoad>
-            self:RegisterEvent("VARIABLES_LOADED");
-          </OnLoad>
-          <OnEvent>
-            TBag.Bank.RightClickMenu_OnLoad(self);
-          </OnEvent>
-        </Scripts>
-      </Frame>
     </Frames>
+  <Scripts>
+    <OnLoad>
+      local f1 = TBag.LibDD:Create_UIDropDownMenu("TBnk_UserDropdown", self)
+      f1:SetPoint("TOPLEFT", -10, -5);
+      f1:EnableMouse(true)
+      f1:SetScript("OnEnter", function()
+          GameTooltip:SetOwner(f1, "ANCHOR_TOPRIGHT");
+          GameTooltip:SetText(f1.tooltip, nil, nil, nil, nil, 1);
+        end)
+      f1:SetScript("OnLeave", function()
+          GameTooltip:Hide();
+          ResetCursor();
+        end)
+      f1:SetScript("OnShow", function()
+          TBnkFrame.UserDropdown_OnLoad(f1);
+        end)
+
+      self.f = TBag.LibDD:Create_UIDropDownMenu("TBnkFrame_RightClickMenu",self)
+      self.f:Hide();
+      self.f:SetID(1);
+
+      self:RegisterEvent("VARIABLES_LOADED");
+
+      self:SetBackdrop( {
+        bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true,
+        tileSize = 4,
+        edgeSize = 4,
+        insets = { left = 2, right = 2, top = 2, bottom = 2 }
+      } )
+    </OnLoad>
+    <OnEvent>
+      TBag.Bank.RightClickMenu_OnLoad(self.f);
+    </OnEvent>
+  </Scripts>
   </Frame>
 </Ui>

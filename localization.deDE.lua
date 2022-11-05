@@ -95,7 +95,7 @@ L["<home location>"] = "<Heimatort>"
 -- Probably only need to chage the Charges.
 -- The ? after the s implies that the s may not be there
 -- as would be the case in a single Charge.
-L["(%d+) Charges?"] = "(%d+) Aufladung?n?"
+L["(%d+) Charges?"] = "(%d+) Aufladung.*"
 -- Format string for adding the charges tooltip.
 -- %d is the number of charges.  |4 specifies this
 -- is a plural/singular pair.  Up until the : is the
@@ -157,33 +157,23 @@ L[" /tinv deletechar CHAR SERVER -- clears all cached info for character "] = " 
 L["TBag v%s"] = "TBag v%s"
 
 L["Normal"] = "Normal"
-L["Stop highlighting new items."] = "Neue Items nicht mehr hervorheben."
 L["Highlight New"] = "Neue Hervorheben"
-L["Highlight items marked as new."] = "Items die als neu Markiert sind hervorheben."
 L["Clear Search"] = "Suche l\195\182schen"
-L["Stop highlighting search results."] = "Suchergebnisse nicht mehr hervorheben."
 
 L["Toggle Edit Mode"] = "Bearbeitungsmodus Ein- und Ausschalten"
-L["Select this option to move classes of items into different 'bars' (the red numbers)."] = "W\195\164hle diese Option um Itemklassen in andere \"Felder\" zu verschieben (die roten Zahlen)."
 
 L["Reload and Sort"] = "Neuladen und Sortieren"
-L["Reloads your items and sorts them."] = "L\195\164d die Items neu und sortiert sie."
 
 L["Toggle Bank"] = "Zeige Bank"
-L["Displays bank contents in a view-only mode.  You may select another player's bank to view from the dropdown."] = "Zeigt den Bankinhalt im Nur-Lesen Modus. Du kannst aus dem Men\195\188 die Bank eines anderen Spielers w\195\164hlen."
 
 L["Unlock Window"] = "Entsperre Fenster"
-L["Allow window to be moved by dragging it."] = "Erlaubt das Fenster durch Ziehen zu verschieben."
 L["Lock Window"] = "Sperre Fenster"
-L["Prevent window from being moved by dragging it."] = "Verbietet das Fenster durch Ziehen zu verschieben."
 
 L["<++>"] = "<++>"
 L["Increase Window Size"] = "Erh\195\182he Fenstergr\195\182\195\159e"
-L["Increase the number of columns displayed"] = "Erh\195\182he die Anzahl der Reihen"
 
 L[">--<"] = ">--<"
 L["Decrease Window Size"] = "Verringere Fenstergr\195\182\195\159e"
-L["Decrease the number of columns displayed"] = "Verringere die Anzahl der Reihen"
 
 L["Reset"] = "Reset"
 L["Close"] = "Schlie\195\159en"
@@ -228,6 +218,7 @@ L["Close Inventory"] = "Inventar Schlie\195\159en"
 L["Highlight New Items"] = "Neue Items Hervorheben"
 L["Reset NEW tag"] = "Setze NEU Markierung zur\195\188ck"
 L["Advanced Configuration"] = "Erweiterte Konfiguration"
+L["Configuration"] = "Konfiguration"
 L["Set Size"] = "Gr\195\182\195\159e"
 L["Set Colors"] = "Farben"
 L["Hide"] = "Verstecken"

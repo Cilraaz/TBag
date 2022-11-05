@@ -161,14 +161,14 @@ function ItemButton:OnClick(button)
       mainFrame:UpdateWindow(TBag.REQ_MUST);
     end
   elseif ( button == "RightButton" ) then
-    HideDropDownMenu(1);
+    TBag.LibDD:HideDropDownMenu(1);
     mainFrame.RightClickMenu_mode = "item";
     mainFrame.RightClickMenu_opts = {
       [TBag.I_BAR] = bar,
       [TBag.I_BAG] = bag,
       [TBag.I_SLOT] = slot
     };
-    ToggleDropDownMenu(1, nil, mainFrame.RightClickMenu, self:GetName(), -50, 0);
+    TBag.LibDD:ToggleDropDownMenu(1, nil, mainFrame.RightClickMenu, self:GetName(), -50, 0);
   end
 end
 
@@ -243,6 +243,8 @@ function ItemButton.Update(self)
     elseif itemlink:sub(1,10) == "battlepet:" then
       local _, _, _, speciesID = TBag:GetItemID(itemlink)
       _, texture = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+    elseif string.find(itemlink, "keystone") then
+      texture = GetItemIcon(158923)
     end
   else
     if cfg.show_bag_icons == 1 then
@@ -270,7 +272,25 @@ function ItemButton.Update(self)
     self.JunkIcon:Hide()
   end
 
-  SetItemButtonCount(self, itm[TBag.I_COUNT])
+  if itm[TBag.I_CHARGES] then
+    self.count = tonumber(itm[TBag.I_CHARGES])
+    local countString = self.Count or _G[self:GetName().."Count"]
+    if ( tonumber(itm[TBag.I_CHARGES]) > 0 ) then
+      countString:SetText(itm[TBag.I_CHARGES])
+      countString:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
+      countString:Show()
+    else
+      countString:Hide()
+    end
+  elseif itm[TBag.I_ITEMLVL] then
+    local countString = self.Count or _G[self:GetName().."Count"]
+    countString:SetText(itm[TBag.I_ITEMLVL])
+    countString:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
+    countString:Show()
+--    SetItemButtonCount(self, itm[TBag.I_ITEMLVL])
+  else
+    SetItemButtonCount(self, itm[TBag.I_COUNT])
+  end
 
   if mainFrame.edit_mode == 1 then
     -- we should be hilighting an entire class of item
@@ -331,6 +351,9 @@ function ItemButton.Update(self)
   TBag.ItemButton.UpdateLock(self, itm, mainFrame)
 
   -- resize and position fonts
+  if itm[TBag.I_CHARGES] or itm[TBag.I_ITEMLVL] then
+    frame_font:SetTextColor(0,1,1,1)
+  end
   frame_font:SetTextHeight(math.ceil(cfg.count_font)) -- count, bottomright
   frame_font:ClearAllPoints()
   frame_font:SetPoint("BOTTOMRIGHT", framename, "BOTTOMRIGHT", 0-cfg.count_font_x, cfg.count_font_y)
@@ -409,12 +432,12 @@ function BarButton:OnClick(button)
       mainFrame:UpdateWindow(TBag.REQ_MUST)
     end
   elseif button =="RightButton" then
-    HideDropDownMenu(1)
+    TBag.LibDD:HideDropDownMenu(1)
     mainFrame.RightClickMenu_mode = "bar"
     mainFrame.RightClickMenu_opts = {
       [TBag.I_BAR] = bar
     }
-    ToggleDropDownMenu(1, nil, mainFrame.RightClickMenu, self:GetName(), -50, 0)
+    TBag.LibDD:ToggleDropDownMenu(1, nil, mainFrame.RightClickMenu, self:GetName(), -50, 0)
   end
 end
 
@@ -632,18 +655,16 @@ function ColumnsButton:OnClick(button, down)
 end
 
 function ColumnsButton:OnEnter()
-  local normal, newbie
+  local normal
 
   if self:GetText() == L["<++>"] then
     normal = L["Increase Window Size"]
-    newbie = L["Increase the number of columns displayed"]
   else
     normal = L["Decrease Window Size"]
-    newbie = L["Decrease the number of columns displayed"]
   end
 
   GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-  GameTooltip_AddNewbieTip(self, normal, 1.0, 1.0, 1.0, newbie)
+  GameTooltip_SetTitle(GameTooltip, normal);
 end
 
 function ColumnsButton:OnLeave()

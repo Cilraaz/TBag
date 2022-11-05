@@ -1,9 +1,9 @@
-## Interface: 80100111
+## Interface: 90105
 ## Title: TBag
 ## Notes: The last bag addon you'll ever need.  Autosorting, viewable anywhere, easy to use yet amazingly configurable.
 ## Notes-deDE: Das einzige Taschenaddon was du jemals brauchen wirst. Automatisches Sortieren, überall einsehbar, Benutzerfreundlich, dabei aber unglaublich gut Konfigurierbar.
 ## Notes-ruRU: Модификация сумок. Возможности - авто-сортировка, просмотр сумок и банка в любом месте, легок в использовании, гибкие настройки.
-## Version: 8.1.5.0
+## Version: 9.1.5.1
 ## X-Category: Inventory
 ## Author: Talos, Modified by Shefki, Modified by GagStv
 ## X-Email: shefki@shefki.org, gagst6@gmail.com
@@ -15,6 +15,8 @@
 ## X-Localizations: enUS, deDE, ruRU
 ## X-CompatibleLocales: enUS, deDE, ruRU
 ##
+!LibUIDropDownMenu\LibStub\LibStub.lua
+!LibUIDropDownMenu\LibUIDropDownMenu\LibUIDropDownMenu.xml
 stub.lua
 localization.enUS.lua
 localization.deDE.lua

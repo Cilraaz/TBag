@@ -82,17 +82,16 @@ end
 function MainFrame:OnMouseDown(button)
   if button == "LeftButton" then
     self:DragStart()
-  elseif button == "RightButton" then
-    HideDropDownMenu(1)
+  elseif button == "RightButton" and IsControlKeyDown() then
+    TBag.LibDD:HideDropDownMenu(1)
     self.RightClickMenu_mode = "mainwindow"
     self.RightClickMenu_opts = {}
-    ToggleDropDownMenu(1, nil, self.RightClickMenu, "cursor", 0,0)
+    TBag.LibDD:ToggleDropDownMenu(1, nil, self.RightClickMenu, "cursor", 0,0)
   end
 end
 
 function MainFrame:OnHide()
-  --PlaySound(863)
-  PlaySoundFile("Interface/AddOns/TBag/sounds/bag_open_close.wav")
+  PlaySound(863)
   self:DragStop()
 
   -- Unhighlight any bags that are still highlighted.
@@ -115,8 +114,7 @@ function MainFrame:OnHide()
 end
 
 function MainFrame:OnShow()
-  --PlaySound(862)
-  PlaySoundFile("Interface/AddOns/TBag/sounds/bag_open_close.wav")
+  PlaySound(862)
 
   -- Always default to the current player
   self:SetPlayer(TBag.PLAYERID)

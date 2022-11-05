@@ -8,7 +8,7 @@ The addon may contain errors that are present in it before making these changes,
 Since I do not have enough experience in developing addons, I do not promise to support this addon.
 
 For the correct operation of the addon, you must delete the old files with the settings TBag.lua and TBag.lua.bak located in:
-..\World of Warcraft\WTF\Account\YOUR_ACCOUNT\SavedVariables
+..\World of Warcraft\_retail_\WTF\Account\YOUR_ACCOUNT\SavedVariables
 
 More information about the original addon:
 https://wow.curseforge.com/projects/tbag-shefki
@@ -24,7 +24,7 @@ https://www.curseforge.com/wow/addons/tbag-shefki
 Так как я не обладаю достаточным опытом разработки аддонов, поддрежку аддона TBag не обещаю.
 
 Для правильной работы аддона необходимо удалить старые файлы с настройками TBag.lua и TBag.lua.bak, расположенные в:
-..\World of Warcraft\WTF\Account\YOUR_ACCOUNT\SavedVariables
+..\World of Warcraft\_retail_\WTF\Account\YOUR_ACCOUNT\SavedVariables
 
 Больше информации по оригинальному аддону:
 https://wow.curseforge.com/projects/tbag-shefki

@@ -81,7 +81,8 @@ TBag.I_COUNT     = "ic";
 TBag.I_NEED      = "sn";
 TBag.I_SOULBOUND = "sb";
 TBag.I_ACCTBOUND = "ab";
-TBag.I_CHARGES         = "ch";
+TBag.I_CHARGES   = "ch";
+TBag.I_ITEMLVL   = "iv";
 TBag.I_LINKSUFFIX = "ls"
 -- Reforging was removed in 6.0,
 -- entry left here commented out to remember that
@@ -482,6 +483,19 @@ function TBag:ClearItmCache(itmcache, bagarr)
   return itmcache;
 end
 
+function TBag:ClearNewItm(itmcache, bagarr)
+  local bag;
+
+  for _, bag in pairs(bagarr) do
+    for slot,_ in pairs(itmcache[bag]) do
+      itmcache[bag][slot][TBag.I_TIMESTAMP] = 1
+      itmcache[bag][slot][TBag.I_NEWSTR] = TBag.V_NEWOFF
+    end
+  end
+
+  return itmcache;
+end
+
 function TBag:CreateDummyBag(bag, template)
   local dbag = _G[self:GetDummyBagFrameName(bag)];
 
@@ -538,7 +552,7 @@ function TBag:GetItemInfo(itemid)
 --      return itemName, itemType, itemSubType, itemRarity, itemLink, itemStackCount;
       local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, _, _, itemStackCount,
             itemEquipLoc, iconFileDataID, _, itemType, itemSubType = GetItemInfo(itemid);
-      return itemName, tostring(itemType), tostring(itemSubType), itemRarity, itemLink, itemStackCount, itemEquipLoc;
+      return itemName, tostring(itemType), tostring(itemSubType), itemRarity, itemLink, itemStackCount, itemEquipLoc, itemType;
     else
       local _,species,_,quality = strsplit(":", itemid)
       local itemName = C_PetJournal.GetPetInfoBySpeciesID(species)
@@ -563,6 +577,10 @@ function TBag:GetItemID(itemlink)
     if a then
       local itemstring = string.join(":","battlepet",a,b,c,d,e,f,g)
       return -1, itemstring, nil, a
+    end
+
+    if string.find(itemlink, "keystone") then
+      return 158923, itemlink
     end
   end
 
@@ -1665,7 +1683,8 @@ function TBag:GetBagMaxItems(bag)
   if bag == REAGENTBANK_CONTAINER then
     return self.MAX_REAGENTBANK_ITEMS
   end
-  return MAX_CONTAINER_ITEMS
+  return 36
+--  return MAX_CONTAINER_ITEMS
 end
 
 function TBag:MakeHyperlink(itemstring,name,quality,level,suffix)
@@ -1894,10 +1913,10 @@ end
 
 
 function TBag:ColorFrame(cfg, barframe, bar)
-  local r, g, b, a = self:GetColor(cfg, "bkgr_"..bar)
-  barframe:SetBackdropColor(r, g, b, a);
-  r, g, b, a = self:GetColor(cfg, "brdr_"..bar)
-  barframe:SetBackdropBorderColor(r, g, b, a);
+    local r, g, b, a = self:GetColor(cfg, "bkgr_"..bar)
+    barframe:SetBackdropColor(r, g, b, a);
+    r, g, b, a = self:GetColor(cfg, "brdr_"..bar)
+    barframe:SetBackdropBorderColor(r, g, b, a);
 end
 
 function TBag:ColorFont(cfg, stock, font, colorname)
@@ -1917,11 +1936,13 @@ function TBag.SetColorFunc(prev)
     opacity = OpacitySliderFrame:GetValue()
   end
 
-  local value = UIDROPDOWNMENU_MENU_VALUE
+  local value = L_UIDROPDOWNMENU_MENU_VALUE
   if value then
     if r and g and b and opacity then
       TBag:SetColor(value.cfg, value.colorname, r, g, b, opacity, 1)
-      value.updatefunc()
+      if value.updatefunc then
+        value.updatefunc()
+      end
     end
   end
 end
@@ -2033,14 +2054,14 @@ function TBag:MakeColorMenu(cfg, updatefunc, level, bagarr)
 
   info = self:MakeColorPickerInfo(cfg, "bkgr_",
     self.MAIN_BAR, L["Main Background Color"], updatefunc);
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = self:MakeColorPickerInfo(cfg, "brdr_",
     self.MAIN_BAR, L["Main Border Color"], updatefunc);
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = { ["disabled"] = 1 };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = {
     ["text"] = L["Set Bar Colors to Main Colors"],
@@ -2050,15 +2071,15 @@ function TBag:MakeColorMenu(cfg, updatefunc, level, bagarr)
       updatefunc();
     end
   };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   info = { ["disabled"] = 1 };
-  UIDropDownMenu_AddButton(info, level);
+  TBag.LibDD:UIDropDownMenu_AddButton(info, level);
 
   for _, bag in ipairs(bagarr) do
     info = self:MakeColorPickerInfo(cfg, "bag_",
       bag, string.format(L["Spotlight for %s"],self:GetBagDispName(bag)), updatefunc);
-    UIDropDownMenu_AddButton(info, level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info, level);
   end
 end
 
@@ -2229,6 +2250,7 @@ function TBag:MakeEmptySlot(itm)
     itm[self.I_SUBTYPE_EL] = "";
     itm[self.I_COUNT] = 0;
     itm[self.I_NEED] = 0;
+    itm[self.I_ITEMLVL] = nil;
   end
 end
 
@@ -2314,6 +2336,12 @@ function TBag:UpdateItmCache(cfg, playerid, itmcache, bagarr, stackarr, comparr,
   local size;
   local bagtype;
 
+  -- for copy from CurInvItm or CurBnkItm to Itm
+  local inBagSlot;
+  local forBagSlot = {self.I_NAME, self.I_SUBTYPE_EL, self.I_COUNT, self.I_RARITY, self.I_SUBTYPE, self.I_TYPE, self.I_NEED,
+                      self.I_READABLE, self.I_NOVALUE, self.I_QUEST_ITEM, self.I_QUEST_ID, self.I_QUEST_ACTIVE, self.I_CHARGES,
+                      self.I_SOULBOUND, self.I_ACCTBOUND, self.I_CRAFTINGREAGENT, self.I_CHARGES, self.I_ITEMLVL}
+
   -- variables used in inner loop, slots:
   local a,b,c,d;
 
@@ -2325,6 +2353,18 @@ function TBag:UpdateItmCache(cfg, playerid, itmcache, bagarr, stackarr, comparr,
   -- Don't update if we aren't at the bank
   if (atbank) and (atbank ~= 1) then
     return self.REQ_NONE;
+  end
+
+  if atbank then
+    if TBag.BankHaveNil == 1 then
+      resort_mandatory = 1
+      TBag.BankHaveNil = 0
+    end
+  else
+    if TBag.BagHaveNil == 1 then
+      resort_mandatory = 1
+      TBag.BagHaveNil = 0
+    end
   end
 
   for index, bag in ipairs(bagarr) do
@@ -2369,6 +2409,7 @@ function TBag:UpdateItmCache(cfg, playerid, itmcache, bagarr, stackarr, comparr,
           itm[self.I_KEYWORD] = itmcache[bag][slot][self.I_KEYWORD];
           itm[self.I_SOULBOUND] = itmcache[bag][slot][self.I_SOULBOUND];
           itm[self.I_CHARGES] = itmcache[bag][slot][self.I_CHARGES];
+          itm[self.I_ITEMLVL] = itmcache[bag][slot][self.I_ITEMLVL];
           itm[self.I_ACCTBOUND] = itmcache[bag][slot][self.I_ACCTBOUND];
           itm[self.I_LINKSUFFIX] = itmcache[bag][slot][self.I_LINKSUFFIX];
 
@@ -2377,11 +2418,35 @@ function TBag:UpdateItmCache(cfg, playerid, itmcache, bagarr, stackarr, comparr,
             itm[self.I_NAME] = self:GetItemName(itm[self.I_ITEMLINK]);
             id, itm[self.I_ITEMLINK], itm[self.I_LINKSUFFIX] = self:GetItemID(itm[self.I_ITEMLINK]);
 
+            if itm[self.I_NAME] == nil then
+              if atbank then
+                TBag.BankHaveNil = 1
+              else
+                TBag.BagHaveNil = 1
+              end
+            end
 
-            local stacksize;
+            local stacksize, itemType;
 --            _, itm[self.I_TYPE], itm[self.I_SUBTYPE], _, _, stacksize = self:GetItemInfo(itm[self.I_ITEMLINK]);
-            _, itm[self.I_TYPE], itm[self.I_SUBTYPE], _, _, stacksize, itm[self.I_SUBTYPE_EL] = self:GetItemInfo(itm[self.I_ITEMLINK]);
-            _, itm[self.I_COUNT], _, itm[self.I_RARITY], itm[self.I_READABLE], _, _, itm[self.I_NOVALUE] = GetContainerItemInfo(bag, slot);
+            _, itm[self.I_TYPE], itm[self.I_SUBTYPE], _, _, stacksize, itm[self.I_SUBTYPE_EL], itemType = self:GetItemInfo(itm[self.I_ITEMLINK]);
+            _, itm[self.I_COUNT], _, itm[self.I_RARITY], itm[self.I_READABLE], _, itemLink, itm[self.I_NOVALUE] = GetContainerItemInfo(bag, slot);
+
+            if itemType == 2 or itemType == 4 then
+              local itemLvl = GetDetailedItemLevelInfo(itemLink);
+              if itemLvl and TBagCfg["Inv"]["show_lvl"] then
+                itm[self.I_ITEMLVL] = tostring(itemLvl);
+                if itemLvl > 183 then
+                  local _, bonusStat = strmatch(itemLink, "^|c%x+|Hitem:%d+:%d*:%d*:%d*:%d*:%d*:%d*:%d*:%d*:%d*:%d*:%d*:(%d*):(.*)|h%[.*%]")
+                    if not string.find(bonusStat, "6652:") then
+                      itm[self.I_ITEMLVL] = itm[self.I_ITEMLVL] .. "+"
+                    end
+                    if string.find(bonusStat, "6935:") then
+                      itm[self.I_ITEMLVL] = itm[self.I_ITEMLVL] .. "!"
+                    end
+                end
+              end
+            end
+
             if (stacksize) then
               itm[self.I_NEED] = stacksize - itm[self.I_COUNT];
             else
@@ -2396,7 +2461,9 @@ function TBag:UpdateItmCache(cfg, playerid, itmcache, bagarr, stackarr, comparr,
               -- see it.  Since items can't just get charges this allows us
               -- to still update charges without eating a huge performance hit.
               tooltip = self:MakeToolTipStr(playerid, itm[self.I_ITEMLINK], bag, slot, itm[self.I_LINKSUFFIX]);
-              itm[self.I_CHARGES] = self:GetItmCharges(tooltip);
+              if self:GetItmCharges(tooltip) then
+                itm[self.I_CHARGES] = self:GetItmCharges(tooltip);
+              end
             end
 
           else
@@ -2417,7 +2484,6 @@ function TBag:UpdateItmCache(cfg, playerid, itmcache, bagarr, stackarr, comparr,
 
           if (itm[self.I_SUBTYPE] == nil) then itm[self.I_SUBTYPE] = ""; end
           if (itm[self.I_SUBTYPE_EL] == nil) then itm[self.I_SUBTYPE_EL] = ""; end
-          if (itm[self.I_NAME] == nil) then itm[self.I_NAME] = ""; end
 
           if (itm[self.I_ITEMLINK] ~= itmcache[bag][slot][self.I_ITEMLINK]) then
             -- the item changed
@@ -2462,6 +2528,33 @@ function TBag:UpdateItmCache(cfg, playerid, itmcache, bagarr, stackarr, comparr,
                 itm[self.I_NEWSTR] = self.V_NEWPLUS;
               end
               itm[self.I_TIMESTAMP] = time();
+            end
+          end
+
+          if (itm[self.I_NAME] == nil) then 
+
+            if atbank then
+              if TBag.CurBnkItm[bag][slot] then
+                for inBagSlot = 1, #forBagSlot do
+                  if TBag.CurBnkItm[bag][slot][forBagSlot[inBagSlot]] then
+                    itm[forBagSlot[inBagSlot]] = TBag.CurBnkItm[bag][slot][forBagSlot[inBagSlot]]
+                  end
+                end
+                itm["nameNil"] = true
+              else
+                itm[self.I_NAME] = ""
+              end
+            else
+              if TBag.CurInvItm[bag][slot] then
+                for inBagSlot = 1, #forBagSlot do
+                  if TBag.CurInvItm[bag][slot][forBagSlot[inBagSlot]] then
+                    itm[forBagSlot[inBagSlot]] = TBag.CurInvItm[bag][slot][forBagSlot[inBagSlot]]
+                  end
+                end
+                itm["nameNil"] = true
+              else
+                itm[self.I_NAME] = ""
+              end
             end
           end
 
@@ -2514,7 +2607,7 @@ function TBag:UpdateItmCache(cfg, playerid, itmcache, bagarr, stackarr, comparr,
 end
 
 
-function TBag:SortItmCache(cfg, playerid, itmcache, baritm, bagarr)
+function TBag:SortItmCache(cfg, playerid, itmcache, baritm, bagarr, atbank)
 --  UpdateAddOnMemoryUsage();
 --  self:PrintDEBUG('SortItmCache Start Memory = '..tostring(GetAddOnMemoryUsage("TBag")));
 
@@ -2557,7 +2650,7 @@ function TBag:SortItmCache(cfg, playerid, itmcache, baritm, bagarr)
         for slot = 1, size do
           if next(itmcache[bag][slot]) then
             itmcache[bag][slot] = self:PickBar(cfg, playerid,
-              itmcache[bag][slot], trade1, trade2);
+              itmcache[bag][slot], trade1, trade2, atbank);
 
             table.insert( baritm[ itmcache[bag][slot][self.I_BAR] ], itmcache[bag][slot]);
           end
@@ -2606,8 +2699,13 @@ function TBag:SetBarFromClass(cfg, itm)
 end
 
 
-function TBag:PickBar(cfg, playerid, itm, trade1, trade2)
+function TBag:PickBar(cfg, playerid, itm, trade1, trade2, atbank)
   local bagtype = self:GetBagType(playerid, itm[self.I_BAG]);
+
+  -- for copy from CurInvItm or CurBnkItm to Itm
+  local inBagSlot;
+  local forBagSlot = {self.I_CAT, self.I_BAR}
+
   if (itm[self.I_ITEMLINK] == nil) then
     if (bagtype and type(bagtype) == "number" and bagtype > 0) then
       itm[self.I_CAT] = string.format(L["EMPTY_%s_SLOTS"],self:GetBagTypeName(bagtype));
@@ -2779,6 +2877,24 @@ function TBag:PickBar(cfg, playerid, itm, trade1, trade2)
     end
   end
 
+  if itm["nameNil"] then 
+    if atbank then
+      for inBagSlot = 1, #forBagSlot do
+        if TBag.CurBnkItm[itm[self.I_BAG]][itm[self.I_SLOT]][forBagSlot[inBagSlot]] then
+          itm[forBagSlot[inBagSlot]] = TBag.CurBnkItm[itm[self.I_BAG]][itm[self.I_SLOT]][forBagSlot[inBagSlot]]
+        end
+      end
+    else
+      for inBagSlot = 1, #forBagSlot do
+        if TBag.CurInvItm[itm[self.I_BAG]][itm[self.I_SLOT]][forBagSlot[inBagSlot]] then
+          itm[forBagSlot[inBagSlot]] = TBag.CurInvItm[itm[self.I_BAG]][itm[self.I_SLOT]][forBagSlot[inBagSlot]]
+        end
+      end
+    end
+
+    itm["nameNil"] = nil
+  end
+
   end
   return itm;
 end
@@ -2879,7 +2995,11 @@ function TBag:CalcBarLayout(calc_dat, baritm, barnum, numbars, colmax, edit_mode
     if (edit_mode == 1) then
       calc_dat[iBar] = table.getn(baritm[barnum+iBar]) + 1;
     else
-      calc_dat[iBar] = table.getn(baritm[barnum+iBar]);
+      if baritm[barnum+iBar] then
+        calc_dat[iBar] = table.getn(baritm[barnum+iBar]);
+      else
+        calc_dat[iBar] = 0;
+      end
     end
   end
 
@@ -3505,7 +3625,7 @@ function TBag:UserDropdown_Init(onclickfunc, TItm, curplayer, selRealm,level)
     if (value == curplayer) then
       info.checked = 1;
     end
-    UIDropDownMenu_AddButton(info,level);
+    TBag.LibDD:UIDropDownMenu_AddButton(info,level);
   end
 end
 
@@ -3516,9 +3636,9 @@ end
 -- and unclickable.  This iterates the frames and sets them to their proper frame
 -- level.
 function TBag:FixMenuFrameLevels()
-  for l=1,UIDROPDOWNMENU_MAXLEVELS do
-    for b=1,UIDROPDOWNMENU_MAXBUTTONS do
-      local button = _G["DropDownList"..l.."Button"..b]
+  for l=1,L_UIDROPDOWNMENU_MAXLEVELS do
+    for b=1,L_UIDROPDOWNMENU_MAXBUTTONS do
+      local button = _G["L_DropDownList"..l.."Button"..b]
       if button then
         local button_parent = button:GetParent()
         if button_parent then

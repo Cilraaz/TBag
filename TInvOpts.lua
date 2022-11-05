@@ -111,9 +111,9 @@ function TInv_Options_InitWindow()
   TInv_OptsFrame:SetWidth( TINVOPT_FRAME_WIDTH );
   TInv_OptsFrame:SetHeight( TINVOPT_FRAME_HEIGHT );
 
-  TInv_OptsFrame:SetBackdropColor(
-  TBag:GetColor(TInvFrame.cfg, "bkgr_"..TBag.MAIN_BAR)
-  );
+  local r, g, b = TBag:GetColor(TInvFrame.cfg, "bkgr_"..TBag.MAIN_BAR)
+  TInv_OptsFrame:SetBackdropColor(r, g, b, 1)
+
   TInv_OptsFrame:SetBackdropBorderColor(
   TBag:GetColor(TInvFrame.cfg, "brdr_"..TBag.MAIN_BAR)
   );

@@ -92,12 +92,14 @@ L["<home location>"] = "<домашняя локация>"
 -- Probably only need to chage the Charges.
 -- The ? after the s implies that the s may not be there
 -- as would be the case in a single Charge.
-L["(%d+) Charges?"] = "(%d+) зарядов?"
+
+--L["(%d+) Charges?"] = "(%d+) заряд.."
+L["(%d+) Charges?"] = "(%d+) заряд.*"
 -- Format string for adding the charges tooltip.
 -- %d is the number of charges.  |4 specifies this
 -- is a plural/singular pair.  Up until the : is the
 -- singular form after is the plural until the ;.
-L["%d |4Charge:Charges;"] = "%d |4заряд:заряда:зарядов;"
+L["%d |4Charge:Charges;"] = "%d |4заряд:зарядов;"
 
 -----------------------------------------------------------------------
 -- BINDING STRINGS 
@@ -154,33 +156,23 @@ L[" /tinv deletechar CHAR SERVER -- clears all cached info for character "] = " 
 L["TBag v%s"] = "TBag v%s"
 
 L["Normal"] = "Нормальный вид"
-L["Stop highlighting new items."] = "Прекратить выделение новых предметов"
 L["Highlight New"] = "Выделить новые предметы"
-L["Highlight items marked as new."] = "Выделить предметы, помеченные как новые"
 L["Clear Search"] = "Очистить поиск"
-L["Stop highlighting search results."] = "Прекратить выделять результаты поиска"
 
 L["Toggle Edit Mode"] = "Включить/выключить режим редактирования"
-L["Select this option to move classes of items into different 'bars' (the red numbers)."] = "Выберите эту опцию, чтобы переместить категории предметов в панели"
 
 L["Reload and Sort"] = "Пересортировать"
-L["Reloads your items and sorts them."] = "Обновить информацию о вещах и отсортировать их"
 
 L["Toggle Bank"] = "Показать/спрятать банк"
-L["Displays bank contents in a view-only mode.  You may select another player's bank to view from the dropdown."] = "Показывает банк игрока в режиме просмотра. Вы также можете выбрать для просмотра банк другого персонажа."
 
 L["Unlock Window"] = "Разблокировать перемещение окна"
-L["Allow window to be moved by dragging it."] = "Разрешает перемещать окно"
 L["Lock Window"] = "Заблокировать перемещение окна"
-L["Prevent window from being moved by dragging it."] = "Запрещает перемещать окно"
   
 L["<++>"] = "<++>"
 L["Increase Window Size"] = "Увеличение размера окна"
-L["Increase the number of columns displayed"] = "Увеличение количества отображаемых столбцов"
 
 L[">--<"] = ">--<"
 L["Decrease Window Size"] = "Уменьшение размера окна"
-L["Decrease the number of columns displayed"] = "Уменьшение количества отображаемых столбцов"
 
 L["Reset"] = "Сброс"
 L["Close"] = "Закрыть"
@@ -197,7 +189,7 @@ L["SubType"] = "Подтип"
 -- Menus and Tooltips
 L["Main Background Color"] = "Основной цвет фона"
 L["Main Border Color"] = "Основной цвет границы"
-L["Set Bar Colors to Main Colors"] = "Выбрать цвет выделения ячеек для выбранной сумки"
+L["Set Bar Colors to Main Colors"] = "Изменить цвет всех панелей на основные цвета"
 L["Spotlight for %s"] = "Выделение для %s"
 L["Current Category: %s"] = "Текущая категория: %s"
 L["Assign item to category:"] = "Назначить предмет в категорию:"
@@ -225,6 +217,7 @@ L["Close Inventory"] = "Закрыть инвентарь"
 L["Highlight New Items"] = "Выделить новые предметы"
 L["Reset NEW tag"] = "Сбросить пометку НОВЫЕ"
 L["Advanced Configuration"] = "Расширенная настройка"
+L["Configuration"] = "Настройка"
 L["Set Size"] = "Указать размер"
 L["Set Colors"] = "Указать цвет"
 L["Hide"] = "Скрыть"
