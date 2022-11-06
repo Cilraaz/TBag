@@ -76,6 +76,7 @@ L["First Bag"] = true
 L["Second Bag"] = true
 L["Third Bag"] = true
 L["Fourth Bag"] = true
+L["Fifth Bag"] = true
 L["First Bank Bag"] = true
 L["Second Bank Bag"] = true
 L["Third Bank Bag"] = true

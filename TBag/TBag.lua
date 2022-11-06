@@ -1463,17 +1463,18 @@ function TBag:GetBagDispName(bag)
   if (bag == BANK_CONTAINER) then return L["Bank"]; end
   if (bag == REAGENTBANK_CONTAINER) then return REAGENT_BANK; end
   if (bag == BACKPACK_CONTAINER) then return L["Backpack"]; end
-  if (bag == 1) then return L["Fourth Bag"]; end
-  if (bag == 2) then return L["Third Bag"]; end
-  if (bag == 3) then return L["Second Bag"]; end
-  if (bag == 4) then return L["First Bag"]; end
-  if (bag == 5) then return L["First Bank Bag"]; end
-  if (bag == 6) then return L["Second Bank Bag"]; end
-  if (bag == 7) then return L["Third Bank Bag"]; end
-  if (bag == 8) then return L["Fourth Bank Bag"]; end
-  if (bag == 9) then return L["Fifth Bank Bag"]; end
-  if (bag == 10) then return L["Sixth Bank Bag"]; end
-  if (bag == 11) then return L["Seventh Bank Bag"]; end
+  if (bag == 1) then return L["Fifth Bag"]; end
+  if (bag == 2) then return L["Fourth Bag"]; end
+  if (bag == 3) then return L["Third Bag"]; end
+  if (bag == 4) then return L["Second Bag"]; end
+  if (bag == 5) then return L["First Bag"]; end
+  if (bag == 6) then return L["First Bank Bag"]; end
+  if (bag == 7) then return L["Second Bank Bag"]; end
+  if (bag == 8) then return L["Third Bank Bag"]; end
+  if (bag == 9) then return L["Fourth Bank Bag"]; end
+  if (bag == 10) then return L["Fifth Bank Bag"]; end
+  if (bag == 11) then return L["Sixth Bank Bag"]; end
+  if (bag == 12) then return L["Seventh Bank Bag"]; end
 end
 
 -- Used for EMPTY_X_SLOTS

@@ -245,12 +245,12 @@ function Bank:UpdateBagGfx()
   totalsize = totalsize + size;
 
   for i=1, numSlots do
-    bag = i + 4;
+    bag = i + 5;
     local type = TBag:GetBagType(self.playerid, bag); -- needed for cacheing
     TBag:GetBagFrameTexture(bag):SetVertexColor(1.0,1.0,1.0, 1.0);
   end
   for i=numSlots+1, NUM_BANKBAGSLOTS do
-    bag = i + 4;
+    bag = i + 5;
     TBag:SetPlayerBagCfg(self.playerid, bag, TBag.I_BAGTYPE, 0);
     TBag:SetPlayerBagCfg(self.playerid, bag, TBag.I_BAGFREE, 0);
     TBag:SetPlayerBagCfg(self.playerid, bag, TBag.I_BAGSIZE, 0);
@@ -258,7 +258,7 @@ function Bank:UpdateBagGfx()
     TBag:GetBagFrameTexture(bag):SetVertexColor(1.0,0.1,0.1, 1.0);
   end
   for i=1, NUM_BANKBAGSLOTS do
-    bag = i + 4;
+    bag = i + 5;
 
     TBag:UpdateBagColors(bag);
 
@@ -1485,6 +1485,8 @@ function Bank:SetReplaceBank()
   end
   BankFrame_Saved:UnregisterEvent("BANKFRAME_OPENED");
   BankFrame_Saved:UnregisterEvent("BANKFRAME_CLOSED");
+  BankFrame = TBnkFrame
+  BankFrame_ShowPanel = function() end
 end
 
 

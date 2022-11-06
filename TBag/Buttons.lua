@@ -503,7 +503,7 @@ function BagButton:OnEnter()
   if TBag:Member(TBag.Bnk_Bags,bag) then
     local numSlots = TBag:GetNumBankSlots(mainFrame.playerid)
 
-    if bag <= numSlots + 4 then
+    if bag <= numSlots + 5 then
       SetItemButtonTextureVertexColor(self, 1,0, 1.0, 1.0, 1.0)
       GameTooltip:AddLine(BANK_BAG, 1.0, 1.0, 1.0)
     else
@@ -546,7 +546,7 @@ function BagButton:OnClick(button,down,drag)
 
   -- Unpurchased bag slot
   local numSlots = TBag:GetNumBankSlots(mainFrame.playerid)
-  if bag > numSlots + 4 then
+  if bag > numSlots + 5 then
     self:SetChecked(not self:GetChecked())
     -- Needed to make the CONFIRM_BUY_BANK_SLOT popup work right
     BankFrame.nextSlotCost = GetBankSlotCost(numSlots)
