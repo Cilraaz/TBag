@@ -91,7 +91,7 @@ function Inv:SetPlayer(playerid)
      self.CACHE_REQ = TBag.REQ_MUST
    end
    self.playerid = playerid;
-   --TBag.Tokens.Update(TInvFrame_TokenFrame)
+   TBag.Tokens.Update(TInvFrame_TokenFrame)
 end
 
 
@@ -175,8 +175,8 @@ function Inv:init(reset)
   TBag.Hooks.Register(TBag.Hooks.REGISTER);
 
   -- Setup the token system
-  --TBag.Tokens.Enable()
-  --TBag.Tokens.Scan()
+  TBag.Tokens.Enable()
+  TBag.Tokens.Scan()
 
   if (cfg["moveLock"] == 0) then
     TInvLockNorm:SetTexture("Interface\\AddOns\\TBag\\images\\LockButton-Locked-Up");

@@ -6,6 +6,7 @@ local _G = getfenv(0)
 local TBag = _G.TBag
 local self = TBag
 
+local ceil = math.ceil
 
 TBag.VERSION = 'r516'
 if TBag.VERSION  == "\64project-version\64" then
@@ -130,6 +131,7 @@ TBag.PAD_BOTTOM_SEARCH = 30;
 TBag.PAD_BOTTOM_SPACER = 5;
 TBag.PAD_TOP_GFX = 63;
 TBag.PAD_TOP_NORM = 25;
+TBag.PAD_TOKEN = 12;
 TBag.BORDER = 2;
 
 TBag.COOLDOWN_SCALE = 0.8;
@@ -3145,6 +3147,13 @@ function TBag:LayoutWindow(frame)
         TInvFrame_MoneyFrame:IsVisible() and TInvFrame_TokenFrame:IsVisible()) then
       PAD_BOTTOM = PAD_BOTTOM + self.PAD_BOTTOM_SEARCH;
     end
+    local tokensWatched = TBag.Tokens.Watched
+    local tokenPadRows = ceil(tokensWatched / 3 - 2)
+    if tokenPadRows > 0 then
+      for i=1,tokenPadRows do
+        PAD_BOTTOM = PAD_BOTTOM + self.PAD_TOKEN
+      end
+    end
     if (PAD_BOTTOM > 0) then
       -- If there's anything at the bottom add the spacer
       PAD_BOTTOM = PAD_BOTTOM + self.PAD_BOTTOM_SPACER;
@@ -3179,6 +3188,16 @@ function TBag:LayoutWindow(frame)
     if (cfg["maxColumns"] <= bags_row or
        (TBnkFrame_MoneyFrame:IsVisible() and TBnkFrame_TokenFrame:IsVisible())) then
       PAD_BOTTOM = PAD_BOTTOM + self.PAD_BOTTOM_NORM;
+    end
+    if TBnkFrame_TokenFrameToken7:IsVisible() then
+      PAD_BOTTOM = PAD_BOTTOM + self.PAD_TOKEN;
+    end
+    local tokensWatched = TBag.Tokens.Watched
+    local tokenPadRows = ceil(tokensWatched / 3 - 2)
+    if tokenPadRows > 0 then
+      for i=1,tokenPadRows do
+        PAD_BOTTOM = PAD_BOTTOM + self.PAD_TOKEN
+      end
     end
 
     if (PAD_BOTTOM > 0) then

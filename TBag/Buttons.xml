@@ -38,7 +38,6 @@
     </Layers>
     <Scripts>
       <OnLoad>
-        <!-- ContainerFrameItemButton_OnLoad(self); -->
         self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
         self:RegisterForDrag("LeftButton")
         self.UpdateTooltip = TBag.ItemButton.OnEnter;

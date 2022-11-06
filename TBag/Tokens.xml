@@ -33,7 +33,7 @@
         self.count = _G[name.."Count"]
       </OnLoad>
       <OnEnter>
-        <!-- TBag.Tokens.Button_OnEnter(self) -->
+        TBag.Tokens.Button_OnEnter(self)
       </OnEnter>
       <OnLeave>
         GameTooltip:Hide()
@@ -67,10 +67,115 @@
           </Anchor>
         </Anchors>
       </Frame>
+      <Frame name="$parentToken4" inherits="TBag_TokenButtonTemplate" id="4">
+        <Anchors>
+          <Anchor point="RIGHT">
+            <Offset x="-13" y="12"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken5" inherits="TBag_TokenButtonTemplate" id="5">
+        <Anchors>
+          <Anchor point="RIGHT" relativeTo="$parentToken1" relativePoint="LEFT">
+            <Offset x="-2" y="12"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken6" inherits="TBag_TokenButtonTemplate" id="6">
+        <Anchors>
+          <Anchor point="RIGHT" relativeTo="$parentToken2" relativePoint="LEFT">
+            <Offset x="-2" y="12"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken7" inherits="TBag_TokenButtonTemplate" id="7">
+        <Anchors>
+          <Anchor point="RIGHT">
+            <Offset x="-13" y="24"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken8" inherits="TBag_TokenButtonTemplate" id="8">
+        <Anchors>
+          <Anchor point="RIGHT" relativeTo="$parentToken1" relativePoint="LEFT">
+            <Offset x="-2" y="24"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken9" inherits="TBag_TokenButtonTemplate" id="9">
+        <Anchors>
+          <Anchor point="RIGHT" relativeTo="$parentToken2" relativePoint="LEFT">
+            <Offset x="-2" y="24"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken10" inherits="TBag_TokenButtonTemplate" id="10">
+        <Anchors>
+          <Anchor point="RIGHT">
+            <Offset x="-13" y="36"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken11" inherits="TBag_TokenButtonTemplate" id="11">
+        <Anchors>
+          <Anchor point="RIGHT" relativeTo="$parentToken1" relativePoint="LEFT">
+            <Offset x="-2" y="36"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken12" inherits="TBag_TokenButtonTemplate" id="12">
+        <Anchors>
+          <Anchor point="RIGHT" relativeTo="$parentToken2" relativePoint="LEFT">
+            <Offset x="-2" y="36"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken13" inherits="TBag_TokenButtonTemplate" id="13">
+        <Anchors>
+          <Anchor point="RIGHT">
+            <Offset x="-13" y="48"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken14" inherits="TBag_TokenButtonTemplate" id="14">
+        <Anchors>
+          <Anchor point="RIGHT" relativeTo="$parentToken1" relativePoint="LEFT">
+            <Offset x="-2" y="48"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken15" inherits="TBag_TokenButtonTemplate" id="15">
+        <Anchors>
+          <Anchor point="RIGHT" relativeTo="$parentToken2" relativePoint="LEFT">
+            <Offset x="-2" y="48"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken16" inherits="TBag_TokenButtonTemplate" id="16">
+        <Anchors>
+          <Anchor point="RIGHT">
+            <Offset x="-13" y="60"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken17" inherits="TBag_TokenButtonTemplate" id="17">
+        <Anchors>
+          <Anchor point="RIGHT" relativeTo="$parentToken1" relativePoint="LEFT">
+            <Offset x="-2" y="60"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentToken18" inherits="TBag_TokenButtonTemplate" id="18">
+        <Anchors>
+          <Anchor point="RIGHT" relativeTo="$parentToken2" relativePoint="LEFT">
+            <Offset x="-2" y="60"/>
+          </Anchor>
+        </Anchors>
+      </Frame>
     </Frames>
     <Scripts>
       <OnShow>
-        <!-- TBag.Tokens.Update(self) -->
+        TBag.Tokens.Update(self)
       </OnShow>
     </Scripts>
   </Frame>

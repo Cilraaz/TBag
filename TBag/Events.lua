@@ -108,18 +108,18 @@ function TBag:PLAYER_LEVEL_UP(event, level)
 end
 
 function TBag:QUEST_ACCEPTED()
-      TInvFrame:UpdateWindow()
+  TInvFrame:UpdateWindow()
 end
 
 function TBag:UNIT_QUEST_LOG_CHANGED(event, unit)
-      if unit == "player" then
-              TInvFrame:UpdateWindow()
-      end
+  if unit == "player" then
+    TInvFrame:UpdateWindow()
+  end
 end
 
 function TBag:PLAYER_ENTERING_WORLD(event)
   -- One time extra scan to avoid bogus data on swapping characters
-  --TBag.Tokens.Scan()
+  TBag.Tokens.Scan()
   self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
