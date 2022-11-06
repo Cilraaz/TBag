@@ -118,7 +118,7 @@ hooksecurefunc('CloseAllWindows', CloseAllWindows)
 function Hooks.OpenBag(bag)
   TBag:PrintDEBUG("event: OpenBag("..bag..")")
   local mainFrame
-  if TBag:Member(TInvFrame.bags,bag) then
+  if TBag:Member(TInvFrame.bags,bag) or bag == 5 then
     mainFrame = TInvFrame
   else
     mainFrame = TBnkFrame

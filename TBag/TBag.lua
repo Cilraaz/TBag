@@ -174,11 +174,11 @@ local L = TBag.LOCALE;
 -----------------------------------------------------------------------
 
 TBag.BAGMIN = REAGENTBANK_CONTAINER;
-TBag.BAGMAX = 11;
+TBag.BAGMAX = 12;
 TBag.MAX_REAGENTBANK_ITEMS = 98 -- has to be a constant since game can't tell us in time
-TBag.Inv_Bags = { BACKPACK_CONTAINER, 4, 3, 2, 1 };
+TBag.Inv_Bags = { BACKPACK_CONTAINER, 5, 4, 3, 2, 1 };
 
-TBag.Bnk_Bags = { BANK_CONTAINER, REAGENTBANK_CONTAINER, 5, 6, 7, 8, 9, 10, 11 };
+TBag.Bnk_Bags = { BANK_CONTAINER, REAGENTBANK_CONTAINER, 6, 7, 8, 9, 10, 11, 12 };
 TBag.Body_Slots = {
   ["HeadSlot"] = 1,
   ["NeckSlot"] = 2,
@@ -489,9 +489,11 @@ function TBag:ClearNewItm(itmcache, bagarr)
   local bag;
 
   for _, bag in pairs(bagarr) do
-    for slot,_ in pairs(itmcache[bag]) do
-      itmcache[bag][slot][TBag.I_TIMESTAMP] = 1
-      itmcache[bag][slot][TBag.I_NEWSTR] = TBag.V_NEWOFF
+    if itmcache[bag] then
+      for slot,_ in pairs(itmcache[bag]) do
+        itmcache[bag][slot][TBag.I_TIMESTAMP] = 1
+        itmcache[bag][slot][TBag.I_NEWSTR] = TBag.V_NEWOFF
+      end
     end
   end
 
@@ -1484,13 +1486,14 @@ function TBag:GetBagPosName(bag)
   if (bag == 2) then return L["BAG2"]; end
   if (bag == 3) then return L["BAG3"]; end
   if (bag == 4) then return L["BAG4"]; end
-  if (bag == 5) then return L["BBAG1"]; end
-  if (bag == 6) then return L["BBAG2"]; end
-  if (bag == 7) then return L["BBAG3"]; end
-  if (bag == 8) then return L["BBAG4"]; end
-  if (bag == 9) then return L["BBAG5"]; end
-  if (bag == 10) then return L["BBAG6"]; end
-  if (bag == 11) then return L["BBAG7"]; end
+  if (bag == 5) then return L["BAG5"]; end
+  if (bag == 6) then return L["BBAG1"]; end
+  if (bag == 7) then return L["BBAG2"]; end
+  if (bag == 8) then return L["BBAG3"]; end
+  if (bag == 9) then return L["BBAG4"]; end
+  if (bag == 10) then return L["BBAG5"]; end
+  if (bag == 11) then return L["BBAG6"]; end
+  if (bag == 12) then return L["BBAG7"]; end
 end
 
 function TBag:GetBagTypeName(bagType)
@@ -1603,7 +1606,7 @@ function TBag:GetBagFrameName(bag)
   elseif self:Member(self.Inv_Bags, bag) then
     return "TInvacterBag"..(bag-1).."Slot";
   elseif self:Member(self.Bnk_Bags, bag) then
-    return "TBnkFrameBag"..(bag-4);
+    return "TBnkFrameBag"..(bag-5);
   else
     return "INVALID";
   end

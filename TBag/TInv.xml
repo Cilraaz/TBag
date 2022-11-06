@@ -210,11 +210,20 @@
         </Anchors>
     </EditBox>
 
-      <CheckButton name="TInvacterBag3Slot" inherits="TBag_BagButtonTemplate" id="4">
+      <CheckButton name="TInvacterBag4Slot" inherits="TBag_BagButtonTemplate" id="5">
         <Anchors>
           <Anchor point="BOTTOMLEFT" relativeTo="$parent_Total" relativePoint="BOTTOMRIGHT">
             <Offset>
               <AbsDimension x="3" y="-1" />
+            </Offset>
+          </Anchor>
+        </Anchors>
+      </CheckButton>
+      <CheckButton name="TInvacterBag3Slot" inherits="TBag_BagButtonTemplate" id="4">
+        <Anchors>
+          <Anchor point="BOTTOMLEFT" relativeTo="TInvacterBag4Slot" relativePoint="BOTTOMRIGHT">
+            <Offset>
+              <AbsDimension x="3" y="0" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -284,6 +293,7 @@
   <Frame name="TInvainerFrame2" inherits="TBagainerFrameTemplate" id="2"/>
   <Frame name="TInvainerFrame3" inherits="TBagainerFrameTemplate" id="3"/>
   <Frame name="TInvainerFrame4" inherits="TBagainerFrameTemplate" id="4"/>
+  <Frame name="TInvainerFrame5" inherits="TBagainerFrameTemplate" id="5"/>
 
     </Frames>
   <Scripts>
@@ -305,7 +315,7 @@
 
       self.f = TBag.LibDD:Create_UIDropDownMenu("TInvFrame_RightClickMenu", self)
       self.f:Hide()
-      self.f:SetID(5)
+      self.f:SetID(6)
 
       self:RegisterEvent("VARIABLES_LOADED")
 

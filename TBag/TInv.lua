@@ -192,6 +192,7 @@ function Inv:init(reset)
     TInvacterBag1Slot:Hide();
     TInvacterBag2Slot:Hide();
     TInvacterBag3Slot:Hide();
+    TInvacterBag4Slot:Hide();
     TInvMenuBarBackpackButton:Hide();
     TInvingButton:Hide();
   end
@@ -438,7 +439,7 @@ end
 function Inv:SetBottomLeftButton_Anchors()
   local buttons = {
     "TInvFrame_Total",
-    "TInvacterBag3Slot",
+    "TInvacterBag4Slot",
   }
   local button_left = nil;
 
@@ -644,6 +645,7 @@ function Inv.Toggle_BagSlotButtons()
     TInvacterBag1Slot:Hide();
     TInvacterBag2Slot:Hide();
     TInvacterBag3Slot:Hide();
+    TInvacterBag4Slot:Hide();
     TInvMenuBarBackpackButton:Hide();
     TInvingButton:Hide();
     TInvFrame:SetButton_Anchors();
@@ -653,6 +655,7 @@ function Inv.Toggle_BagSlotButtons()
     TInvacterBag1Slot:Show();
     TInvacterBag2Slot:Show();
     TInvacterBag3Slot:Show();
+    TInvacterBag4Slot:Show();
     TInvMenuBarBackpackButton:Show();
     TInvingButton:Show();
     TInvFrame:SetButton_Anchors();

@@ -230,7 +230,7 @@
           </OnLoad>
         </Scripts>
       </CheckButton>
-      <CheckButton name="TBnkFrameBag1" inherits="TBag_BagButtonTemplate" id="5">
+      <CheckButton name="TBnkFrameBag1" inherits="TBag_BagButtonTemplate" id="6">
         <Anchors>
           <Anchor point="LEFT" relativeTo="TBnkFrameBagReagent" relativePoint="RIGHT">
             <Offset>
@@ -239,7 +239,7 @@
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="TBnkFrameBag2" inherits="TBag_BagButtonTemplate" id="6">
+      <CheckButton name="TBnkFrameBag2" inherits="TBag_BagButtonTemplate" id="7">
         <Anchors>
           <Anchor point="BOTTOMLEFT" relativeTo="TBnkFrameBag1" relativePoint="BOTTOMRIGHT">
             <Offset>
@@ -248,7 +248,7 @@
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="TBnkFrameBag3" inherits="TBag_BagButtonTemplate" id="7">
+      <CheckButton name="TBnkFrameBag3" inherits="TBag_BagButtonTemplate" id="8">
         <Anchors>
           <Anchor point="BOTTOMLEFT" relativeTo="TBnkFrameBag2" relativePoint="BOTTOMRIGHT">
             <Offset>
@@ -257,7 +257,7 @@
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="TBnkFrameBag4" inherits="TBag_BagButtonTemplate" id="8">
+      <CheckButton name="TBnkFrameBag4" inherits="TBag_BagButtonTemplate" id="9">
         <Anchors>
           <Anchor point="BOTTOMLEFT" relativeTo="TBnkFrameBag3" relativePoint="BOTTOMRIGHT">
             <Offset>
@@ -266,7 +266,7 @@
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="TBnkFrameBag5" inherits="TBag_BagButtonTemplate" id="9">
+      <CheckButton name="TBnkFrameBag5" inherits="TBag_BagButtonTemplate" id="10">
         <Anchors>
           <Anchor point="BOTTOMLEFT" relativeTo="TBnkFrameBag4" relativePoint="BOTTOMRIGHT">
             <Offset>
@@ -275,7 +275,7 @@
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="TBnkFrameBag6" inherits="TBag_BagButtonTemplate" id="10">
+      <CheckButton name="TBnkFrameBag6" inherits="TBag_BagButtonTemplate" id="11">
         <Anchors>
           <Anchor point="BOTTOMLEFT" relativeTo="TBnkFrameBag5" relativePoint="BOTTOMRIGHT">
             <Offset>
@@ -284,7 +284,7 @@
           </Anchor>
         </Anchors>
       </CheckButton>
-      <CheckButton name="TBnkFrameBag7" inherits="TBag_BagButtonTemplate" id="11">
+      <CheckButton name="TBnkFrameBag7" inherits="TBag_BagButtonTemplate" id="12">
         <Anchors>
           <Anchor point="BOTTOMLEFT" relativeTo="TBnkFrameBag6" relativePoint="BOTTOMRIGHT">
             <Offset>
@@ -296,13 +296,13 @@
 
   <Frame name="TBnkainerFrame3" inherits="TBagainerFrameTemplate" id="0"/>
   <Frame name="TBnkainerFrame4" inherits="TBagainerFrameTemplate" id="0"/>
-  <Frame name="TBnkainerFrame5" inherits="TBagainerFrameTemplate" id="5"/>
   <Frame name="TBnkainerFrame6" inherits="TBagainerFrameTemplate" id="6"/>
   <Frame name="TBnkainerFrame7" inherits="TBagainerFrameTemplate" id="7"/>
   <Frame name="TBnkainerFrame8" inherits="TBagainerFrameTemplate" id="8"/>
   <Frame name="TBnkainerFrame9" inherits="TBagainerFrameTemplate" id="9"/>
   <Frame name="TBnkainerFrame10" inherits="TBagainerFrameTemplate" id="10"/>
   <Frame name="TBnkainerFrame11" inherits="TBagainerFrameTemplate" id="11"/>
+  <Frame name="TBnkainerFrame12" inherits="TBagainerFrameTemplate" id="12"/>
 
     </Frames>
   <Scripts>
