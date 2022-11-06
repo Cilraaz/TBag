@@ -41,10 +41,10 @@
           <OnEnter>
             if (TInvFrame.cfg["moveLock"] == 0) then
               GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-              GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Unlock Window"]);
+              GameTooltip:SetText(TBag.LOCALE["Unlock Window"]);
             else
               GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-              GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Lock Window"]);
+              GameTooltip:SetText(TBag.LOCALE["Lock Window"]);
             end
           </OnEnter>
           <OnLeave>
@@ -73,13 +73,13 @@
           <OnEnter>
             if (TBag.SrchText) then
               GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-              GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Clear Search"]);
+              GameTooltip:SetText(TBag.LOCALE["Clear Search"]);
             elseif (TInvFrame.hilight_new == 0) then
               GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-              GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Highlight New"]);
+              GameTooltip:SetText(TBag.LOCALE["Highlight New"]);
             else
               GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-              GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Normal"]);
+              GameTooltip:SetText(TBag.LOCALE["Normal"]);
             end
           </OnEnter>
           <OnLeave>
@@ -107,7 +107,7 @@
           </OnClick>
           <OnEnter>
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-            GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Toggle Edit Mode"]);
+            GameTooltip:SetText(TBag.LOCALE["Toggle Edit Mode"]);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -135,7 +135,7 @@
           </OnClick>
           <OnEnter>
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-            GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Toggle Bank"]);
+            GameTooltip:SetText(TBag.LOCALE["Toggle Bank"]);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -164,7 +164,7 @@
           </OnMouseDown>
           <OnEnter>
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-            GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Configuration"]);
+            GameTooltip:SetText(TBag.LOCALE["Configuration"]);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -191,7 +191,7 @@
           </OnClick>
           <OnEnter>
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-            GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Reload and Sort"]);
+            GameTooltip:SetText(TBag.LOCALE["Reload and Sort"]);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();

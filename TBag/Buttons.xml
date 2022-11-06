@@ -184,10 +184,10 @@
       <OnEnter>
         if self:GetParent().cfg.moveLock == 0 then
           GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-          GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Unlock Window"]);
+          GameTooltip:SetText(TBag.LOCALE["Unlock Window"]);
         else
           GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-          GameTooltip_SetTitle(GameTooltip, TBag.LOCALE["Lock Window"]);
+          GameTooltip:SetText(TBag.LOCALE["Lock Window"]);
         end
       </OnEnter>
       <OnLeave>
