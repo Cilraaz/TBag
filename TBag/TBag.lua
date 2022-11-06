@@ -8,7 +8,7 @@ local self = TBag
 
 local ceil = math.ceil
 
-TBag.VERSION = 'r516'
+TBag.VERSION = GetAddOnMetadata("TBag", "Version")
 if TBag.VERSION  == "\64project-version\64" then
   local rev = '$Rev: 516 $'
   local date = '$Date: 2016-11-13 12:03:42 +0000 (Sun, 13 Nov 2016) $'
