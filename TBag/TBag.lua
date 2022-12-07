@@ -3593,10 +3593,17 @@ local function ItemMover__main(instructions)
       for index = instruction_count, 1, -1 do
         local inst = instructions[index];
 
-        local containerInfo = GetContainerItemInfo(inst.from_bag,inst.from_slot);
-        local locked1 = containerInfo.isLocked
-        containerInfo = GetContainerItemInfo(inst.to_bag,inst.to_slot);
-        local locked2 = containerInfo.isLocked
+        local containerInfo = C_Container.GetContainerItemInfo(inst.from_bag,inst.from_slot);
+        local locked1
+        if containerInfo then
+          locked1 = containerInfo.isLocked
+        end
+
+        containerInfo = C_Container.GetContainerItemInfo(inst.to_bag,inst.to_slot);
+        local locked2
+        if containerInfo then
+          locked2 = containerInfo.isLocked
+        end
 
         if ((not locked1) and (not locked2)) then
           ClearCursor();
