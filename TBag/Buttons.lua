@@ -60,7 +60,7 @@ function ItemButton:OnEnter()
       SetTooltipMoney(GameTooltip, repairCost)
       GameTooltip:Show()
     elseif MerchantFrame:IsVisible() then
-      ShowContainerSellCursor(bag, slot)
+      C_Container.ShowContainerSellCursor(bag, slot)
     elseif itm[TBag.I_READABLE] then
       ShowInspectCursor()
     end
@@ -183,7 +183,13 @@ function ItemButton.UpdateLock(self, itm, mainFrame)
   -- Another player's view never appears locked
   if not TBag:IsLive(mainFrame) then return end
 
-  local _,_,locked,_,_ = GetContainerItemInfo(itm[TBag.I_BAG],itm[TBag.I_SLOT])
+  local containerInfo = C_Container.GetContainerItemInfo(itm[TBag.I_BAG],itm[TBag.I_SLOT])
+  local locked
+  if containerInfo then
+    locked = containerInfo.isLocked
+  else
+    locked = false
+  end
   SetItemButtonDesaturated(self, locked, 0.5, 0.5, 0.5);
 end
 
@@ -199,7 +205,7 @@ function ItemButton.UpdateCooldown(self, itm, mainFrame)
   local start, duration, enable = 0, 0, false
 
   if itm[TBag.I_ITEMLINK] and TBag:IsLive(mainFrame) then
-    start, duration, enable = GetContainerItemCooldown(itm[TBag.I_BAG], itm[TBag.I_SLOT])
+    start, duration, enable = C_Container.GetContainerItemCooldown(itm[TBag.I_BAG], itm[TBag.I_SLOT])
   end
   CooldownFrame_Set(cooldownFrame, start, duration, enable)
   cooldownFrame:SetScale(TBag.COOLDOWN_SCALE)
@@ -324,7 +330,11 @@ function ItemButton.Update(self)
         -- or we would be in the above if statement not this else.
         self:SetAlpha(0.25)
       else
+         if not itemlink and cfg.show_bag_icons ~= 1 then
+          self:SetAlpha(0)
+         else
           self:SetAlpha(1)
+         end
       end
     end
 
@@ -484,7 +494,7 @@ function BagButton:OnEnter()
     GameTooltip:Show()
     return
   elseif mainFrame.playerid == TBag.PLAYERID and
-    GameTooltip:SetInventoryItem("player", ContainerIDToInventoryID(bag)) then
+    GameTooltip:SetInventoryItem("player", C_Container.ContainerIDToInventoryID(bag)) then
     GameTooltip:Show()
     return
   else
@@ -601,7 +611,7 @@ function BagButton:OnDrag()
   local isLive = TBag:IsLive(mainFrame)
 
   if not isLive then return end
-  PickupBagFromSlot(ContainerIDToInventoryID(bag))
+  PickupBagFromSlot(C_Container.ContainerIDToInventoryID(bag))
 end
 
 -- Used for the ItemAnim subframe to trigger the animation
@@ -613,7 +623,7 @@ function BagButton:ItemAnimOnEvent(event, invid, texture)
     local bag = self:GetParent():GetID()
     local id
     if bag > 0 then
-      id = ContainerIDToInventoryID(bag)
+      id = C_Container.ContainerIDToInventoryID(bag)
     else
       id = bag
     end

@@ -1485,7 +1485,8 @@ function Bank:SetReplaceBank()
   end
   BankFrame_Saved:UnregisterEvent("BANKFRAME_OPENED");
   BankFrame_Saved:UnregisterEvent("BANKFRAME_CLOSED");
-  BankFrame = TBnkFrame
+-- Taint here
+--  BankFrame = TBnkFrame
   BankFrame_ShowPanel = function() end
 end
 

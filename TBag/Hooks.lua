@@ -264,7 +264,7 @@ function Hooks.ContainerFrameItemButton_OnModifiedClick(self, button, ...)
         if alt_pickup  then
           local tradeslot = TradeFrame_GetAvailableSlot()
           if tradeslot then
-            PickupContainerItem(itm[TBag.I_BAG], itm[TBag.I_SLOT])
+            C_Container.PickupContainerItem(itm[TBag.I_BAG], itm[TBag.I_SLOT])
             ClickTradeButton(tradeslot)
             ClearCursor()
             return
@@ -278,7 +278,7 @@ function Hooks.ContainerFrameItemButton_OnModifiedClick(self, button, ...)
         -- If we have auctioneer do not auto pickup let auctioneer do it.
         if not AuctionFramePost then
           if alt_pickup and PanelTemplates_GetSelectedTab(AuctionFrame) == 3 then
-            PickupContainerItem(itm[TBag.I_BAG], itm[TBag.I_SLOT])
+            C_Container.PickupContainerItem(itm[TBag.I_BAG], itm[TBag.I_SLOT])
             ClickAuctionSellItemButton()
             ClearCursor()
             return
@@ -289,7 +289,7 @@ function Hooks.ContainerFrameItemButton_OnModifiedClick(self, button, ...)
           MailFrameTab_OnClick(MailFrameTab2)
         end
         if alt_pickup and PanelTemplates_GetSelectedTab(MailFrame) == 2 then
-          PickupContainerItem(itm[TBag.I_BAG], itm[TBag.I_SLOT])
+          C_Container.PickupContainerItem(itm[TBag.I_BAG], itm[TBag.I_SLOT])
           ClickSendMailItemButton()
           ClearCursor()
           return

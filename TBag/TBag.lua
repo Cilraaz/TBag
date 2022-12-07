@@ -650,15 +650,16 @@ end
 local function PutItemInBank(reagent)
   local bag = reagent and REAGENTBANK_CONTAINER or BANK_CONTAINER
   local texture, emptyBankSlot
-  for slot=1, GetContainerNumSlots(bag) do
-    texture = GetContainerItemInfo(bag, slot)
+  for slot=1, C_Container.GetContainerNumSlots(bag) do
+    local containerInfo = GetContainerItemInfo(bag, slot)
+    texture = containerInfo.iconFileID
     if not texture then
       emptyBankSlot = slot
       break
     end
   end
   if emptyBankSlot then
-    PickupContainerItem(bag, emptyBankSlot)
+    C_Container.PickupContainerItem(bag, emptyBankSlot)
   else
     ClearCursor()
     UIErrorsFrame:AddMessage(ERR_BAG_FULL, 1.0, 0.1, 0.1, 1.0)
@@ -674,7 +675,7 @@ function TBag:PutItemInBag(bag)
   elseif bag == REAGENTBANK_CONTAINER then
     return PutItemInBank(true)
   else
-    return PutItemInBag(ContainerIDToInventoryID(bag))
+    return PutItemInBag(C_Container.ContainerIDToInventoryID(bag))
   end
 end
 
@@ -1539,7 +1540,7 @@ function TBag:GetBagType(playerid, bag)
   if (playerid == self.PLAYERID and (TBnkFrame.atbank == 1 or self:Member(TBag.Inv_Bags, bag))) then
     local itemlink,id,name,itemType,subType,quality;
     if (bag > BACKPACK_CONTAINER) then
-      itemlink = GetInventoryItemLink("player", ContainerIDToInventoryID(bag));
+      itemlink = GetInventoryItemLink("player", C_Container.ContainerIDToInventoryID(bag));
       id, itemlink = self:GetItemID(itemlink);
       name, itemType, subType, quality = self:GetItemInfo(id);
     end
@@ -1548,7 +1549,7 @@ function TBag:GetBagType(playerid, bag)
     self:SetPlayerBagCfg(playerid, bag, self.I_ITEMID, nil);
     self:SetPlayerBagCfg(playerid, bag, self.I_NAME, name);
     self:SetPlayerBagCfg(playerid, bag, self.I_RARITY, quality);
-    _,type = GetContainerNumFreeSlots(bag);
+    _,type = C_Container.GetContainerNumFreeSlots(bag);
 
     -- GetContainerNumFreeSlots doesn't return the bag type for the REAGENTBANK.
     if (bag == REAGENTBANK_CONTAINER) then
@@ -1768,17 +1769,19 @@ function TBag:GetSlotInfo(playerid, bag)
   -- Refresh the cache if we are the current player, or at a bank
   if (playerid == self.PLAYERID) then
     if (TBnkFrame.atbank == 1) or self:Member(self.Inv_Bags, bag) then
-      size = GetContainerNumSlots(bag);
+      size = C_Container.GetContainerNumSlots(bag);
       if bag == REAGENTBANK_CONTAINER and not IsReagentBankUnlocked() then
         -- Game always shows the full size of the ReagentBank even if not unlocked
         size = 0
       end
 --    self:Print("b="..bag..", size="..size);
       for i=1, size do
-        local _
-        _, item = GetContainerItemInfo(bag, i);
-        if (not item) then
-          free = free + 1;
+	local containerInfo = C_Container.GetContainerItemInfo(bag, i);
+        if containerInfo then
+          item = containerInfo.stackCount;
+          if (not item) then
+            free = free + 1;
+          end
         end
       end
       -- Save the info to the cache
@@ -2162,7 +2165,7 @@ function TBag:SetInventoryItem(tt, playerid, itemlink, bag, slot, suffix)
     -- Inventory and being at the bank is always safe
     if (self:Member(self.Inv_Bags, bag) or TBnkFrame.atbank == 1) then
       if (bag == BANK_CONTAINER) or (bag == REAGENTBANK_CONTAINER) then
-        hasCooldown, repairCost = tt:SetInventoryItem("player", self:GetInvSlotID(bag, slot));
+        _, hasCooldown, repairCost = tt:SetInventoryItem("player", self:GetInvSlotID(bag, slot));
       else
         hasCooldown, repairCost = tt:SetBagItem(bag, slot);
       end
@@ -2202,12 +2205,13 @@ function TBag:MakeToolTipStr(playerid, itemlink, bag, slot, mailitem, attach, su
   end
 
   if (not tt) then
-    tt = CreateFrame("GameTooltip","TBag_tt");
+    tt = CreateFrame("GameTooltip","TBag_tt", nil,"GameTooltipTemplate");
     -- Allow tooltip set methods to dynamically add new lines based on these
-    tt:AddFontStrings(
-      tt:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
-      tt:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
-    );
+-- 06.12.2022
+--    tt:AddFontStrings(
+--      tt:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
+--      tt:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
+--    );
   end
   tt:SetOwner(UIParent, "ANCHOR_NONE");  -- this makes sure that tooltip.valid = true
   tt:ClearLines();
@@ -2404,7 +2408,7 @@ function TBag:UpdateItmCache(cfg, playerid, itmcache, bagarr, stackarr, comparr,
 
           id = nil; -- Clear our local id that we use to cache the id to avoid extra
                     -- calls to TBag:GetItemID().
-          itm[self.I_ITEMLINK] = GetContainerItemLink(bag, slot);
+          itm[self.I_ITEMLINK] = C_Container.GetContainerItemLink(bag, slot);
           itm[self.I_BAG] = bag;
           itm[self.I_SLOT] = slot;
           -- take items from old position
@@ -2435,7 +2439,13 @@ function TBag:UpdateItmCache(cfg, playerid, itmcache, bagarr, stackarr, comparr,
             local stacksize, itemType;
 --            _, itm[self.I_TYPE], itm[self.I_SUBTYPE], _, _, stacksize = self:GetItemInfo(itm[self.I_ITEMLINK]);
             _, itm[self.I_TYPE], itm[self.I_SUBTYPE], _, _, stacksize, itm[self.I_SUBTYPE_EL], itemType = self:GetItemInfo(itm[self.I_ITEMLINK]);
-            _, itm[self.I_COUNT], _, itm[self.I_RARITY], itm[self.I_READABLE], _, itemLink, itm[self.I_NOVALUE] = GetContainerItemInfo(bag, slot);
+
+            local containerInfo = C_Container.GetContainerItemInfo(bag, slot);
+            itm[self.I_COUNT] = containerInfo.stackCount
+            itm[self.I_RARITY] = containerInfo.quality
+            itm[self.I_READABLE] = containerInfo.isReadable
+            itemLink = containerInfo.hyperlink
+            itm[self.I_NOVALUE] = containerInfo.isFiltered
 
             if itemType == 2 or itemType == 4 then
               local itemLvl = GetDetailedItemLevelInfo(itemLink);
@@ -2458,7 +2468,11 @@ function TBag:UpdateItmCache(cfg, playerid, itmcache, bagarr, stackarr, comparr,
             else
               itm[self.I_NEED] = 0;
             end
-            itm[self.I_QUEST_ITEM],itm[self.I_QUEST_ID],itm[self.I_QUEST_ACTIVE] = GetContainerItemQuestInfo(bag, slot);
+
+            local questInfo = C_Container.GetContainerItemQuestInfo(bag, slot);
+            itm[self.I_QUEST_ITEM] = questInfo.isQuestItem
+            itm[self.I_QUEST_ID] = questInfo.questID
+            itm[self.I_QUEST_ACTIVE] = questInfo.isActive
 
             if (itm[self.I_CHARGES]) then
               -- If the item has cached charges scan the tooltip again.
@@ -3196,7 +3210,7 @@ function TBag:LayoutWindow(frame)
     if TBnkFrame_TokenFrameToken7:IsVisible() then
       PAD_BOTTOM = PAD_BOTTOM + self.PAD_TOKEN;
     end
-    local tokensWatched = TBag.Tokens.Watched
+    local tokensWatched = TBag.Tokens.Watched or 0
     local tokenPadRows = ceil(tokensWatched / 3 - 2)
     if tokenPadRows > 0 then
       for i=1,tokenPadRows do
@@ -3537,7 +3551,7 @@ function TBag.SplitContainerItem(bag, slot, split)
   TBag.STACKSPLIT = 1;
 end
 
-hooksecurefunc('SplitContainerItem', TBag.SplitContainerItem);
+hooksecurefunc(C_Container, 'SplitContainerItem', TBag.SplitContainerItem);
 
 function TBag.PickupContainerItem(bag, slot)
   -- Only skip a slot if we have just manually split
@@ -3548,7 +3562,7 @@ function TBag.PickupContainerItem(bag, slot)
   TBag.STACKSPLIT = nil;
 end
 
-hooksecurefunc('PickupContainerItem', TBag.PickupContainerItem);
+hooksecurefunc(C_Container, 'PickupContainerItem', TBag.PickupContainerItem);
 
 -- array to hold the instructions
 -- don't edit this directly use TBag:ItemMover.
@@ -3578,19 +3592,22 @@ local function ItemMover__main(instructions)
     if (instruction_count > 0) then
       for index = instruction_count, 1, -1 do
         local inst = instructions[index];
-        local _,_,locked1 = GetContainerItemInfo(inst.from_bag,inst.from_slot);
-        local _,_,locked2 = GetContainerItemInfo(inst.to_bag,inst.to_slot);
+
+        local containerInfo = GetContainerItemInfo(inst.from_bag,inst.from_slot);
+        local locked1 = containerInfo.isLocked
+        containerInfo = GetContainerItemInfo(inst.to_bag,inst.to_slot);
+        local locked2 = containerInfo.isLocked
 
         if ((not locked1) and (not locked2)) then
           ClearCursor();
           if (inst.count and inst.count > 0) then
-            SplitContainerItem(inst.from_bag,inst.from_slot,inst.count);
+            C_Container.SplitContainerItem(inst.from_bag,inst.from_slot,inst.count);
           else
-            PickupContainerItem(inst.from_bag,inst.from_slot);
+            C_Container.PickupContainerItem(inst.from_bag,inst.from_slot);
             TBag:SetStackSkip(inst.from_bag,inst.from_slot,nil);
             TBag:SetCompSkip(inst.from_bag,inst.from_slot,nil);
           end
-          PickupContainerItem(inst.to_bag,inst.to_slot);
+          C_Container.PickupContainerItem(inst.to_bag,inst.to_slot);
           TBag:SetStackSkip(inst.to_bag,inst.to_slot,nil);
           TBag:SetCompSkip(inst.to_bag,inst.to_slot,nil);
           ClearCursor();
