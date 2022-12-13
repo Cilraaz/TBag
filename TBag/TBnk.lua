@@ -1366,10 +1366,6 @@ function Bank:UpdateWindow(resort_req)
     return;
   end
 
-  -- Hide Blizzard bank frame
-  CloseBankFrame()
-  TBnkFrame:Show()
-
   -- Set the overall scale
   self:SetScale(self.cfg["scale"]);
 
