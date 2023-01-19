@@ -322,6 +322,9 @@ function Inv.Button_Reload_OnClick()
     TBag:ClearStackSkip(TInvFrame.bags);
     TBag:ClearCompSkip(TInvFrame.bags);
 
+    -- Use Blizzard's sort function initially
+    C_Container.SortBags()
+
     -- Send a message to restack
     if (TInvFrame.cfg["stack_resort"] == 1) then
       TInvFrame.cfg["stack_once"] = 1;
