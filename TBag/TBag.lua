@@ -1776,12 +1776,9 @@ function TBag:GetSlotInfo(playerid, bag)
       end
 --    self:Print("b="..bag..", size="..size);
       for i=1, size do
-	local containerInfo = C_Container.GetContainerItemInfo(bag, i);
-        if containerInfo then
-          item = containerInfo.stackCount;
-          if (not item) then
-            free = free + 1;
-          end
+        local containerInfo = C_Container.GetContainerItemInfo(bag, i);
+        if not containerInfo then
+          free = free + 1
         end
       end
       -- Save the info to the cache
