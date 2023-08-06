@@ -24,7 +24,7 @@ jobs:
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
-          filename: TBag-Cilraaz-${{ env.tag }}.zip
+          filename: TBag-${{ env.tag }}.zip
           exclusions: '*.git* *.pkgmeta *.svn* .editorconfig LICENSE README.md'
       # Create a release on GitHub
       - name: Create Release
@@ -32,7 +32,7 @@ jobs:
         uses: ncipollo/release-action@v1.11.1
         with:
           tag: ${{ github.ref }}
-          name: TBag-Cilraaz
+          name: TBag
           body: |
             Changes: https://github.com/Cilraaz/TBag/compare/${{ env.oldtag }}...${{ env.tag }}
           draft: false
@@ -45,6 +45,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./TBag-Cilraaz-${{ env.tag }}.zip
-          asset_name: TBag-Cilraaz-${{ env.tag }}.zip
+          asset_path: ./TBag-${{ env.tag }}.zip
+          asset_name: TBag-${{ env.tag }}.zip
           asset_content_type: application/zip
