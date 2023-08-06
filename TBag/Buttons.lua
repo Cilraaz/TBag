@@ -4,6 +4,22 @@ local _G = getfenv(0)
 local TBag = _G.TBag
 local L = TBag.LOCALE
 
+-- lua locals
+local match = match
+local sub = sub
+local strformat = string.format
+local strlower = string.lower
+local strmatch = string.match
+local mathceil = math.ceil
+local time = time
+local tonumber = tonumber
+
+-- C_Container locals
+local ContainerIDToInventoryID = ContainerIDToInventoryID or (C_Container and C_Container.ContainerIDToInventoryID)
+local GetContainerItemCooldown = GetContainerItemCooldown or (C_Container and C_Container.GetContainerItemCooldown)
+local GetContainerItemInfo = GetContainerItemInfo or (C_Container and C_Container.GetContainerItemInfo)
+local ShowContainerSellCursor = ShowContainerSellCursor or (C_Container and C_Container.ShowContainerSellCursor)
+
 -- Generic itembutton implementation
 TBag.ItemButton = {}
 local ItemButton = TBag.ItemButton
@@ -43,14 +59,12 @@ function ItemButton:OnEnter()
       return
     end
   else
-    hasCooldown, repairCost = TBag:SetInventoryItem(GameTooltip, mainFrame.playerid,
-                                                    link, bag, slot, suffix)
+    hasCooldown, repairCost = TBag:SetInventoryItem(GameTooltip, mainFrame.playerid, link, bag, slot, suffix)
   end
 
   -- Set charges if remote viewing, Blizzard's code does it otherwise.
   if charges and not isLive then
-    GameTooltip:AddLine(string.format(L["%d |4Charge:Charges;"], tonumber(charges)),
-                        255,255,255,1)
+    GameTooltip:AddLine(strformat(L["%d |4Charge:Charges;"], tonumber(charges)), 255,255,255,1)
     GameTooltip:Show()
   end
 
@@ -60,7 +74,7 @@ function ItemButton:OnEnter()
       SetTooltipMoney(GameTooltip, repairCost)
       GameTooltip:Show()
     elseif MerchantFrame:IsVisible() then
-      C_Container.ShowContainerSellCursor(bag, slot)
+      ShowContainerSellCursor(bag, slot)
     elseif itm[TBag.I_READABLE] then
       ShowInspectCursor()
     end
@@ -78,10 +92,10 @@ function ItemButton:OnEnter()
     if cat then
       if mainFrame.edit_selected ~= "" then
         GameTooltip:AddLine(" ", 0,0,0)
-        GameTooltip:AddLine(string.format(L["|c%sLeft click to move category |r|c%s%s|r|c%s to bar |r|c%s%s|r"],TBag.C_INST,TBag.C_CAT,mainFrame.edit_selected,TBag.C_INST,TBag.C_BAR,bar))
+        GameTooltip:AddLine(strformat(L["|c%sLeft click to move category |r|c%s%s|r|c%s to bar |r|c%s%s|r"],TBag.C_INST,TBag.C_CAT,mainFrame.edit_selected,TBag.C_INST,TBag.C_BAR,bar))
       else
         GameTooltip:AddLine(" ", 0,0,0)
-        GameTooltip:AddLine(string.format(L["|c%sLeft click to select category to move:|r |c%s%s|r"],TBag.C_INST,TBag.C_CAT,cat))
+        GameTooltip:AddLine(strformat(L["|c%sLeft click to select category to move:|r |c%s%s|r"],TBag.C_INST,TBag.C_CAT,cat))
         if link then
           GameTooltip:AddLine(L["Right click to assign this item to a different category"], 1,0,0)
         end
@@ -152,23 +166,23 @@ function ItemButton:OnClick(button)
       mainFrame.edit_hilight = cat
     else
       -- we got a click, and we already had one selected.  let's move the items
-      TBag:SetCatBar(mainFrame.cfg, mainFrame.edit_selected, bar, 1);
+      TBag:SetCatBar(mainFrame.cfg, mainFrame.edit_selected, bar, 1)
 
-      mainFrame.edit_selected = "";
+      mainFrame.edit_selected = ""
       mainFrame.edit_hilight = cat
 
       -- resort will force a window update
-      mainFrame:UpdateWindow(TBag.REQ_MUST);
+      mainFrame:UpdateWindow(TBag.REQ_MUST)
     end
   elseif ( button == "RightButton" ) then
-    TBag.LibDD:HideDropDownMenu(1);
-    mainFrame.RightClickMenu_mode = "item";
+    TBag.LibDD:HideDropDownMenu(1)
+    mainFrame.RightClickMenu_mode = "item"
     mainFrame.RightClickMenu_opts = {
       [TBag.I_BAR] = bar,
       [TBag.I_BAG] = bag,
       [TBag.I_SLOT] = slot
-    };
-    TBag.LibDD:ToggleDropDownMenu(1, nil, mainFrame.RightClickMenu, self:GetName(), -50, 0);
+    }
+    TBag.LibDD:ToggleDropDownMenu(1, nil, mainFrame.RightClickMenu, self:GetName(), -50, 0)
   end
 end
 
@@ -183,14 +197,14 @@ function ItemButton.UpdateLock(self, itm, mainFrame)
   -- Another player's view never appears locked
   if not TBag:IsLive(mainFrame) then return end
 
-  local containerInfo = C_Container.GetContainerItemInfo(itm[TBag.I_BAG],itm[TBag.I_SLOT])
+  local containerInfo = GetContainerItemInfo(itm[TBag.I_BAG],itm[TBag.I_SLOT])
   local locked
   if containerInfo then
     locked = containerInfo.isLocked
   else
     locked = false
   end
-  SetItemButtonDesaturated(self, locked, 0.5, 0.5, 0.5);
+  SetItemButtonDesaturated(self, locked, 0.5, 0.5, 0.5)
 end
 
 -- Handles cooldown updates.  Takes an itm and mainFrame paramenter
@@ -205,7 +219,7 @@ function ItemButton.UpdateCooldown(self, itm, mainFrame)
   local start, duration, enable = 0, 0, false
 
   if itm[TBag.I_ITEMLINK] and TBag:IsLive(mainFrame) then
-    start, duration, enable = C_Container.GetContainerItemCooldown(itm[TBag.I_BAG], itm[TBag.I_SLOT])
+    start, duration, enable = GetContainerItemCooldown(itm[TBag.I_BAG], itm[TBag.I_SLOT])
   end
   CooldownFrame_Set(cooldownFrame, start, duration, enable)
   cooldownFrame:SetScale(TBag.COOLDOWN_SCALE)
@@ -311,9 +325,7 @@ function ItemButton.Update(self)
   else
     -- no hilights, just do your normal work
     local age = time() - itm[TBag.I_TIMESTAMP]
-    if TBag:GetGrp(cfg, TBag.G_USE_NEW, itm[TBag.I_BAR]) == 1 and
-       itm[TBag.I_ITEMLINK] and itm[TBag.I_TIMESTAMP] > 1 and
-       age < 60*cfg.newItemTimeout then
+    if TBag:GetGrp(cfg, TBag.G_USE_NEW, itm[TBag.I_BAR]) == 1 and itm[TBag.I_ITEMLINK] and itm[TBag.I_TIMESTAMP] > 1 and age < 60*cfg.newItemTimeout then
       -- item is still new, display the new text.
       frame_stock:SetText(cfg[itm[TBag.I_NEWSTR]])
       if age < 60*cfg.recentTimeout then
@@ -339,7 +351,7 @@ function ItemButton.Update(self)
     end
 
     if TBag.SrchText then
-      if string.match(string.lower(itm[TBag.I_NAME]), TBag.SrchText) then
+      if strmatch(strlower(itm[TBag.I_NAME]), TBag.SrchText) then
         -- Matched to normal alpha
         self:SetAlpha(1)
       else
@@ -364,14 +376,13 @@ function ItemButton.Update(self)
   if itm[TBag.I_CHARGES] or itm[TBag.I_ITEMLVL] then
     frame_font:SetTextColor(0,1,1,1)
   end
-  frame_font:SetTextHeight(math.ceil(cfg.count_font)) -- count, bottomright
+  frame_font:SetTextHeight(mathceil(cfg.count_font)) -- count, bottomright
   frame_font:ClearAllPoints()
   frame_font:SetPoint("BOTTOMRIGHT", framename, "BOTTOMRIGHT", 0-cfg.count_font_x, cfg.count_font_y)
 
-  frame_stock:SetTextHeight(math.ceil(cfg.new_font)) -- stock, topleft
+  frame_stock:SetTextHeight(mathceil(cfg.new_font)) -- stock, topleft
   frame_stock:ClearAllPoints()
-  frame_stock:SetPoint("TOPLEFT", framename, "TOPLEFT", cfg.count_font_x/2,
-                       0-cfg.count_font_y)
+  frame_stock:SetPoint("TOPLEFT", framename, "TOPLEFT", cfg.count_font_x/2, 0-cfg.count_font_y)
 
   -- Update the cooldown
   TBag.ItemButton.UpdateCooldown(self, itm, mainFrame)
@@ -405,17 +416,17 @@ function BarButton:OnEnter()
   GameTooltip:ClearLines()
 
   if mainFrame.edit_selected ~= "" then
-    GameTooltip:AddLine(string.format("|c%sLeft click to move category |r|c%s%s|r|c%s to bar |r|c%s%s|r",TBag.C_INST,TBag.C_CAT,mainFrame.edit_selected,TBag.C_INST,TBag.C_BAR,bar));
+    GameTooltip:AddLine(strformat("|c%sLeft click to move category |r|c%s%s|r|c%s to bar |r|c%s%s|r",TBag.C_INST,TBag.C_CAT,mainFrame.edit_selected,TBag.C_INST,TBag.C_BAR,bar))
   else
-    GameTooltip:AddLine(string.format("|c%sBar |r|c%s%s|r",TBag.C_INST,TBag.C_BAR,bar));
-    GameTooltip:AddLine(" ");
+    GameTooltip:AddLine(strformat("|c%sBar |r|c%s%s|r",TBag.C_INST,TBag.C_BAR,bar))
+    GameTooltip:AddLine(" ")
     for key, value in pairs(mainFrame.BC_LIST[bar]) do
-      GameTooltip:AddLine(string.format("|c%s%s|r",TBag.C_CAT,value));
+      GameTooltip:AddLine(strformat("|c%s%s|r",TBag.C_CAT,value))
     end
-    GameTooltip:AddLine(" ");
-    GameTooltip:AddLine(L["Right click for options"], 0.85,0.85,0.85, 1.0);
+    GameTooltip:AddLine(" ")
+    GameTooltip:AddLine(L["Right click for options"], 0.85,0.85,0.85, 1.0)
   end
-  GameTooltip:Show();
+  GameTooltip:Show()
 end
 
 function BarButton:OnLeave()
@@ -472,8 +483,8 @@ function BagButton:OnEnter()
   local bag = self:GetID()
   local mainFrame = self:GetParent()
 
-  GameTooltip:SetOwner(self, "ANCHOR_LEFT");
-  GameTooltip:ClearLines();
+  GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+  GameTooltip:ClearLines()
   if bag == BANK_CONTAINER then
     GameTooltip:SetText(L["The Bank"], 1.0, 1.0, 1.0)
     GameTooltip:Show()
@@ -484,7 +495,7 @@ function BagButton:OnEnter()
     return
   elseif bag == REAGENTBANK_CONTAINER then
     if TBag:IsReagentBankUnlocked(mainFrame.playerid) then
-      GameTooltip:SetText(REAGENT_BANK, 1.0, 1.0, 1.0);
+      GameTooltip:SetText(REAGENT_BANK, 1.0, 1.0, 1.0)
     else
       GameTooltip:SetText(L["Purchasable Reagent Bank"], 1.0, 1.0, 1.0)
       if mainFrame.atbank == 1 then
@@ -494,14 +505,13 @@ function BagButton:OnEnter()
     GameTooltip:Show()
     return
   elseif mainFrame.playerid == TBag.PLAYERID and
-    GameTooltip:SetInventoryItem("player", C_Container.ContainerIDToInventoryID(bag)) then
+    GameTooltip:SetInventoryItem("player", ContainerIDToInventoryID(bag)) then
     GameTooltip:Show()
     return
   else
     local itemlink = TBag:GetPlayerBagCfg(mainFrame.playerid, bag, TBag.I_ITEMLINK)
     if (itemlink and itemlink ~= "") then
-      local level = TBag:GetPlayerInfo(mainFrame.playerid,TBag.G_BASIC)[TBag.S_LEVEL] or
-                    UnitLevel("player")
+      local level = TBag:GetPlayerInfo(mainFrame.playerid,TBag.G_BASIC)[TBag.S_LEVEL] or UnitLevel("player")
       itemlink = itemlink..":"..level
       GameTooltip:SetHyperlink(itemlink)
       GameTooltip:Show()
@@ -587,11 +597,7 @@ function BagButton:OnClick(button,down,drag)
 
   -- Handle linking of the bags
   if IsModifiedClick("CHATLINK") then
-    local hyperlink = TBag:MakeHyperlink(itm[TBag.I_ITEMLINK], itm[TBag.I_NAME],
-                                         itm[TBag.I_RARITY],
-                                         TBag:GetPlayerInfo(mainFrame.playerid,
-                                         TBag.G_BASIC)[TBag.S_LEVEL] or UnitLevel("player"),
-                                         itm[TBag.I_LINKSUFFIX])
+    local hyperlink = TBag:MakeHyperlink(itm[TBag.I_ITEMLINK], itm[TBag.I_NAME], itm[TBag.I_RARITY], TBag:GetPlayerInfo(mainFrame.playerid, TBag.G_BASIC)[TBag.S_LEVEL] or UnitLevel("player"), itm[TBag.I_LINKSUFFIX])
     if hyperlink and ChatEdit_InsertLink(hyperlink) then
       self:SetChecked(not self:GetChecked())
       return
@@ -611,7 +617,7 @@ function BagButton:OnDrag()
   local isLive = TBag:IsLive(mainFrame)
 
   if not isLive then return end
-  PickupBagFromSlot(C_Container.ContainerIDToInventoryID(bag))
+  PickupBagFromSlot(ContainerIDToInventoryID(bag))
 end
 
 -- Used for the ItemAnim subframe to trigger the animation
@@ -623,7 +629,7 @@ function BagButton:ItemAnimOnEvent(event, invid, texture)
     local bag = self:GetParent():GetID()
     local id
     if bag > 0 then
-      id = C_Container.ContainerIDToInventoryID(bag)
+      id = ContainerIDToInventoryID(bag)
     else
       id = bag
     end
@@ -674,7 +680,7 @@ function ColumnsButton:OnEnter()
   end
 
   GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-  GameTooltip_SetTitle(GameTooltip, normal);
+  GameTooltip_SetTitle(GameTooltip, normal)
 end
 
 function ColumnsButton:OnLeave()

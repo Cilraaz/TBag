@@ -72,10 +72,7 @@ function MainFrame:DragStop()
     self.cfg.frameTOP    = self:GetTop()    * scale
     self.cfg.frameBOTTOM = self:GetBottom() * scale
 
-    TBag:PrintDEBUG("new position: top="..self.cfg.frameTOP..
-                    ", bottom="..self.cfg.frameBOTTOM..
-                    ", left="..self.cfg.frameLEFT..
-                    ", right="..self.cfg.frameRIGHT)
+    TBag:PrintDEBUG("new position: top="..self.cfg.frameTOP..", bottom="..self.cfg.frameBOTTOM..", left="..self.cfg.frameLEFT..", right="..self.cfg.frameRIGHT)
   end
 end
 

@@ -3,6 +3,8 @@ local TBag = _G.TBag
 TBag.Hooks = {}
 local Hooks = TBag.Hooks
 
+-- C_Container locals
+local PickupContainerItem = PickupContainerItem or (C_Container and C_Container.PickupContainerItem)
 
 Hooks.UNREGISTER = 0
 Hooks.REGISTER = 1
@@ -264,7 +266,7 @@ function Hooks.ContainerFrameItemButton_OnModifiedClick(self, button, ...)
         if alt_pickup  then
           local tradeslot = TradeFrame_GetAvailableSlot()
           if tradeslot then
-            C_Container.PickupContainerItem(itm[TBag.I_BAG], itm[TBag.I_SLOT])
+            PickupContainerItem(itm[TBag.I_BAG], itm[TBag.I_SLOT])
             ClickTradeButton(tradeslot)
             ClearCursor()
             return
@@ -278,7 +280,7 @@ function Hooks.ContainerFrameItemButton_OnModifiedClick(self, button, ...)
         -- If we have auctioneer do not auto pickup let auctioneer do it.
         if not AuctionFramePost then
           if alt_pickup and PanelTemplates_GetSelectedTab(AuctionFrame) == 3 then
-            C_Container.PickupContainerItem(itm[TBag.I_BAG], itm[TBag.I_SLOT])
+            PickupContainerItem(itm[TBag.I_BAG], itm[TBag.I_SLOT])
             ClickAuctionSellItemButton()
             ClearCursor()
             return
@@ -289,7 +291,7 @@ function Hooks.ContainerFrameItemButton_OnModifiedClick(self, button, ...)
           MailFrameTab_OnClick(MailFrameTab2)
         end
         if alt_pickup and PanelTemplates_GetSelectedTab(MailFrame) == 2 then
-          C_Container.PickupContainerItem(itm[TBag.I_BAG], itm[TBag.I_SLOT])
+          PickupContainerItem(itm[TBag.I_BAG], itm[TBag.I_SLOT])
           ClickSendMailItemButton()
           ClearCursor()
           return
@@ -300,10 +302,7 @@ function Hooks.ContainerFrameItemButton_OnModifiedClick(self, button, ...)
     -- not a live frame
     if itm[TBag.I_ITEMLINK] then
       if IsModifiedClick("CHATLINK") then
-        local hl = TBag:MakeHyperlink(itm[TBag.I_ITEMLINK], itm[TBag.I_NAME],
-                                      itm[TBag.I_RARITY],
-                                      TBag:GetPlayerInfo(mainFrame.playerid,TBag.G_BASIC)[TBag.S_LEVEL] or UnitLevel("player"),
-                                      itm[TBag.I_LINKSUFFIX])
+        local hl = TBag:MakeHyperlink(itm[TBag.I_ITEMLINK], itm[TBag.I_NAME], itm[TBag.I_RARITY], TBag:GetPlayerInfo(mainFrame.playerid,TBag.G_BASIC)[TBag.S_LEVEL] or UnitLevel("player"), itm[TBag.I_LINKSUFFIX])
         ChatEdit_InsertLink(hl)
         return
       elseif IsModifiedClick("DRESSUP") then
@@ -330,4 +329,5 @@ function Hooks.MerchantFrame_OnShow(...)
   TInvFrame:UpdateWindow()
   TBnkFrame:UpdateWindow()
 end
+
 MerchantFrame:HookScript("OnShow", Hooks.MerchantFrame_OnShow)

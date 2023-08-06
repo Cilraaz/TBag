@@ -4,11 +4,19 @@ local L = TBag.LOCALE
 TBag.Tokens = {}
 local Tokens = TBag.Tokens
 
+-- lua locals
+local twipe = table.wipe
+
+-- C_CurrencyInfo locals
+local ExpandCurrencyList = ExpandCurrencyList or (C_CurrencyInfo and C_CurrencyInfo.ExpandCurrencyList)
+local GetCurrencyListInfo = GetCurrencyListInfo or (C_CurrencyInfo and C_CurrencyInfo.GetCurrencyListInfo)
+local GetCurrencyListSize = GetCurrencyListSize or (C_CurrencyInfo and C_CurrencyInfo.GetCurrencyListSize)
+
 function Tokens.GetItemStringFromCurrencyIndex(index)
   local tt = TBag_tt
 
   if (not tt) then
-    tt = CreateFrame("GameTooltip","TBag_tt", nil,"GameTooltipTemplate");
+    tt = CreateFrame("GameTooltip","TBag_tt", nil,"GameTooltipTemplate")
     -- Allow tooltip set methods to dynamically add new lines based on these
 -- 06.12.2022
 --    tt:AddFontStrings(
@@ -26,9 +34,8 @@ function Tokens.GetItemStringFromCurrencyIndex(index)
 end
 
 function Tokens.SetItmFromCurrencyIndex(index,itm)
-  local cI = C_CurrencyInfo.GetCurrencyListInfo(index)
-  local name, isHeader, isExpand, isUnused, isWatched, count, icon =
-	cI.name, cI.isHeader, cI.isHeaderExpanded, cI.isTypeUnused, cI.isShowInBackpack, cI.quantity, cI.iconFileID
+  local cI = GetCurrencyListInfo(index)
+  local name, isHeader, isExpand, isUnused, isWatched, count, icon = cI.name, cI.isHeader, cI.isHeaderExpanded, cI.isTypeUnused, cI.isShowInBackpack, cI.quantity, cI.iconFileID
 
   if not name then
     return false
@@ -57,9 +64,9 @@ function Tokens.Scan()
     TTknItm[TBag.PLAYERID][TBag.D_BAG] = {}
   end
   local dbag = TTknItm[TBag.PLAYERID][TBag.D_BAG]
-  table.wipe(dbag)
+  twipe(dbag)
 
-  for i = 1, C_CurrencyInfo.GetCurrencyListSize() do
+  for i = 1, GetCurrencyListSize() do
     n = n + 1
     dbag[n] = {}
     if not Tokens.SetItmFromCurrencyIndex(i,dbag[n]) then
@@ -67,9 +74,9 @@ function Tokens.Scan()
       return
     end
     if dbag[n][TBag.I_HEADER] and not dbag[n][TBag.I_EXPAND] then
-      local size = C_CurrencyInfo.GetCurrencyListSize()
-      C_CurrencyInfo.ExpandCurrencyList(i, true)
-      size = C_CurrencyInfo.GetCurrencyListSize() - size
+      local size = GetCurrencyListSize()
+      ExpandCurrencyList(i, true)
+      size = GetCurrencyListSize() - size
       for j = i+1, i+size do
         n = n + 1
         dbag[n] = {}
@@ -78,7 +85,7 @@ function Tokens.Scan()
           return
         end
       end
-      C_CurrencyInfo.ExpandCurrencyList(i, false)
+      ExpandCurrencyList(i, false)
     end
   end
   scanning = false
@@ -124,8 +131,7 @@ function Tokens.Update(frame)
   local framename = frame:GetName()
   local mainFrame = frame:GetParent()
   if mainFrame.cfg.show_tokens ~= 1 then return end
-  if not (TTknItm and TTknItm[mainFrame.playerid] and
-          TTknItm[mainFrame.playerid][TBag.D_BAG]) then
+  if not (TTknItm and TTknItm[mainFrame.playerid] and TTknItm[mainFrame.playerid][TBag.D_BAG]) then
     frame:Hide()
     return
   end

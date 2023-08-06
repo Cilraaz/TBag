@@ -1,13 +1,16 @@
+-- lua locals
+local strformat = string.format
+local strmatch = string.match
+
 -- Test harness don't bother to load if this isn't a dev version.
-if (not string.match(TBag.VERSION,"-Alpha") and
-    not string.match(TBag.VERSION,"-Beta")) then
+if (not strmatch(TBag.VERSION,"-Alpha") and not strmatch(TBag.VERSION,"-Beta")) then
   return
 end
 
 local TBag = TBag
 
 -- Localization Support
-local L = TBag.LOCALE;
+local L = TBag.LOCALE
 
 -- Config table we'll use.
 local cfg = { }
@@ -766,67 +769,64 @@ local tests = {
 tests[38266] = nil
 
 local function build_itm(id,itm)
-  itm[TBag.I_ITEMLINK] = "item:"..id..":0:0:0:0:0:0:0";
-  itm[TBag.I_BAG] = 1;
-  itm[TBag.I_SLOT] = 1;
-  itm[TBag.I_NAME], itm[TBag.I_TYPE], itm[TBag.I_SUBTYPE], itm[TBag.I_RARITY]
-    = TBag:GetItemInfo(itm[TBag.I_ITEMLINK]);
+  itm[TBag.I_ITEMLINK] = "item:"..id..":0:0:0:0:0:0:0"
+  itm[TBag.I_BAG] = 1
+  itm[TBag.I_SLOT] = 1
+  itm[TBag.I_NAME], itm[TBag.I_TYPE], itm[TBag.I_SUBTYPE], itm[TBag.I_RARITY] = TBag:GetItemInfo(itm[TBag.I_ITEMLINK])
 end
 
 -- Executes a single test
 --   inputs: itemid and the expected category
 --   output: result (boolean), itm (table produced)
 local function test(id,cat)
-  local itm = { };
+  local itm = { }
   local result = false
 
-  build_itm(id,itm);
-  TBag:PickBar(cfg, "TBAGTEST|TBAGTEST", itm, "", "");
+  build_itm(id,itm)
+  TBag:PickBar(cfg, "TBAGTEST|TBAGTEST", itm, "", "")
   for c in cat:gmatch("[^|]+") do
     if c == itm[TBag.I_CAT] then
       result = true
     end
   end
-  return result, itm;
+  return result, itm
 end
 
 function TBag:GetCategory(id)
  self:InitDefVals(cfg, self.Inv_Bags, 0, 1)
 
  local _, itm = test(id,"TEST")
- local link = self:MakeHyperlink(itm[self.I_ITEMLINK],itm[self.I_NAME],
-                                 itm[self.I_RARITY],80);
- link = tostring(link);
- TBag:Print(string.format("%s (%s) = %s",link,tostring(id),tostring(itm[self.I_CAT])))
+ local link = self:MakeHyperlink(itm[self.I_ITEMLINK],itm[self.I_NAME],itm[self.I_RARITY],80)
+ link = tostring(link)
+ TBag:Print(strformat("%s (%s) = %s",link,tostring(id),tostring(itm[self.I_CAT])))
 end
 
 function TBag:RunTests(verbose)
-  local fail = false;
+  local fail = false
   -- Initialize the cfg with default values
-  self:InitDefVals(cfg, self.Inv_Bags, 0, 1);
+  self:InitDefVals(cfg, self.Inv_Bags, 0, 1)
 
-  self:Print(L["TEST RUN STARTING"]);
+  self:Print(L["TEST RUN STARTING"])
 
   for id,cat in pairs(tests) do
     local result, itm = test(id,cat)
-    local link = self:MakeHyperlink(itm[self.I_ITEMLINK],itm[self.I_NAME],
-                                    itm[self.I_RARITY],80);
-    link = tostring(link);
+    local link = self:MakeHyperlink(itm[self.I_ITEMLINK],itm[self.I_NAME],itm[self.I_RARITY],80)
+    link = tostring(link)
 
     if (result == true) then
       if (verbose) then
-        local output = string.format(L["SUCCESS: %s"], link);
-        self:Print(output,0,1,0);
+        local output = strformat(L["SUCCESS: %s"], link)
+        self:Print(output,0,1,0)
       end
     else
-      fail = true;
-      local output = string.format(L["FAIL: %s (%s) expected %q but got %q"], link,
-                                   tostring(id),tostring(cat),tostring(itm[self.I_CAT]));
-      self:Print(output,1,0,0);
+      fail = true
+      local output = strformat(L["FAIL: %s (%s) expected %q but got %q"], link,
+                                   tostring(id),tostring(cat),tostring(itm[self.I_CAT]))
+      self:Print(output,1,0,0)
     end
   end
 
   if (fail == false) then
-    self:Print(L["ALL TESTS SUCCESSFUL"]);
+    self:Print(L["ALL TESTS SUCCESSFUL"])
   end
 end

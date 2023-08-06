@@ -1,6 +1,9 @@
 TBag = CreateFrame("Frame","TBag",UIParent)
 TBag:RegisterEvent("VARIABLES_LOADED")
 
+local getmetatable = getmetatable
+local setmetatable = setmetatable
+
 function TBag:CopyTable(tab_obj, seen)
   if type(tab_obj) ~= 'table' then return tab_obj end
   if seen and seen[tab_obj] then return seen[tab_obj] end
