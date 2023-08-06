@@ -56,17 +56,18 @@ function TBag:BAG_UPDATE_COOLDOWN(event, bag)
   -- If we're given an argument check if it's a inventory bag and ignore the event
   -- if it isn't.  If not argument is passed we have to update the window
   -- regardless.  /sigh
+  local UpdateFreq = 0.5
   if not bag then
-    if not TInvFrame.isMoving then
+    if not TInvFrame.isMoving and GetTime() - self.Inv.LastUpdate > UpdateFreq then
       TInvFrame:UpdateWindow()
     end
-    if not TBnkFrame.isMoving then
+    if not TBnkFrame.isMoving and GetTime() - self.Bank.LastUpdate > UpdateFreq then
       TBnkFrame:UpdateWindow()
     end
   else
-    if TBag:Member(TInvFrame.bags, bag) then
+    if TBag:Member(TInvFrame.bags, bag) and GetTime() - self.Inv.LastUpdate > UpdateFreq then
       TInvFrame:UpdateWindow()
-    elseif TBag:Member(TBnkFrame.bags, bag) then
+    elseif TBag:Member(TBnkFrame.bags, bag) and GetTime() - self.Bank.LastUpdate > UpdateFreq then
       TBnkFrame:UpdateWindow()
     end
   end
