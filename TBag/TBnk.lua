@@ -1475,7 +1475,7 @@ end
 
 
 function Bank:DisableBlizzardBank()
-  print("Disabling Blizzard Bank Frame...")
+  TBag:PrintDEBUG("Disabling Blizzard Bank Frame")
   Bank.HiddenFrame = CreateFrame('Frame', nil, _G.UIParent)
   Bank.HiddenFrame:SetPoint('BOTTOM')
   Bank.HiddenFrame:SetSize(1,1)
