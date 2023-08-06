@@ -3,7 +3,7 @@ local TBag = _G.TBag
 TBag.Bank = {}
 local Bank = TBag.Bank
 
-local BankFrame_Saved = nil;
+--local BankFrame_Saved = nil;
 
 -- Localization Support
 local L = TBag.LOCALE;
@@ -155,7 +155,7 @@ function Bank:init(reset)
   end
   self:InitBagGfx()
 
-  self:SetReplaceBank();
+  self:DisableBlizzardBank();
 
   if (cfg["moveLock"] == 0) then
     TBnkLockNorm:SetTexture("Interface\\AddOns\\TBag\\images\\LockButton-Locked-Up");
@@ -1476,18 +1476,19 @@ function Bank:UpdateWindow(resort_req)
 end
 
 
-function Bank:SetReplaceBank()
-  if BankFrame_Saved == nil then
-    BankFrame_Saved = BankFrame;
-  end
-  if BankFrame_Saved:IsVisible() then
-    BankFrame_Saved:Hide();
-  end
-  BankFrame_Saved:UnregisterEvent("BANKFRAME_OPENED");
-  BankFrame_Saved:UnregisterEvent("BANKFRAME_CLOSED");
--- Taint here
---  BankFrame = TBnkFrame
-  BankFrame_ShowPanel = function() end
+function Bank:DisableBlizzardBank()
+  print("Disabling Blizzard Bank Frame...")
+  Bank.HiddenFrame = CreateFrame('Frame', nil, _G.UIParent)
+  Bank.HiddenFrame:SetPoint('BOTTOM')
+  Bank.HiddenFrame:SetSize(1,1)
+  Bank.HiddenFrame:Hide()
+
+  _G.BankFrame:UnregisterAllEvents()
+  _G.BankFrame:SetScript('OnShow', nil)
+  _G.BankFrame:SetScript('OnHide', nil)
+  _G.BankFrame:SetParent(Bank.HiddenFrame)
+  _G.BankFrame:ClearAllPoints()
+  _G.BankFrame:SetPoint('BOTTOM')
 end
 
 
