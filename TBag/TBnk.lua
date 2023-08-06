@@ -3,8 +3,6 @@ local TBag = _G.TBag
 TBag.Bank = {}
 local Bank = TBag.Bank
 
---local BankFrame_Saved = nil;
-
 -- Localization Support
 local L = TBag.LOCALE;
 
