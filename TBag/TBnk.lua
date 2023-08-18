@@ -13,6 +13,9 @@ local strgmatch = string.gmatch
 local getmetatable = getmetatable
 local setmetatable = setmetatable
 
+-- C_Container locals
+local SortBankBags = SortBankBags or (C_Container and C_Container.SortBankBags)
+
 -- Last Update Time
 Bank.LastUpdate = 0
 
@@ -349,6 +352,9 @@ function Bank.Button_Reload_OnClick()
       TBag:ClearItmCache(TBnkItm[TBnkFrame.playerid], TBnkFrame.bags)
       TBag:ClearStackSkip(TBnkFrame.bags)
       TBag:ClearCompSkip(TBnkFrame.bags)
+
+      -- Use Blizzard's sort function initially (to ensure items are placed in the correct bags, such as reagent bag)
+      SortBankBags()
 
       -- Send a message to restack
       if (TBnkFrame.cfg["stack_resort"] == 1) then

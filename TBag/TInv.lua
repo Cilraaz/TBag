@@ -331,7 +331,7 @@ function Inv.Button_Reload_OnClick()
     TBag:ClearStackSkip(TInvFrame.bags)
     TBag:ClearCompSkip(TInvFrame.bags)
 
-    -- Use Blizzard's sort function initially
+    -- Use Blizzard's sort function initially (to ensure items are placed in the correct bags, such as reagent bag)
     SortBags()
 
     -- Send a message to restack
