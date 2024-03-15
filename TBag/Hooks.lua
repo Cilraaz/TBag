@@ -197,7 +197,7 @@ function Hooks.ToggleBackpack()
 end
 
 function Hooks.ToggleAllBags()
-  TBag:PrintDEBUG("event: OpenAllBags()")
+  TBag:PrintDEBUG("event: ToggleAllBags()")
   local inv_bag_toggled  = false
   local inv_shown = false
   local bnk_bag_toggled = false
