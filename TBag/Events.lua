@@ -1,4 +1,6 @@
 local _G = getfenv(0)
+local GetGlidingInfo = C_PlayerInfo.GetGlidingInfo
+local InCombatLockdown = InCombatLockdown
 
 function TBag:VARIABLES_LOADED()
   self.Inv:init(0)
@@ -56,7 +58,8 @@ function TBag:BAG_UPDATE_COOLDOWN(event, bag)
   -- If we're given an argument check if it's a inventory bag and ignore the event
   -- if it isn't.  If not argument is passed we have to update the window
   -- regardless.  /sigh
-  local UpdateFreq = 0.5
+  -- If we're gliding (Dragonriding) or in combat, update once per 2 seconds. Otherwise, update every 0.5 seconds.
+  local UpdateFreq = (GetGlidingInfo() or InCombatLockdown()) and 2.0 or 0.5
   if not bag then
     if not TInvFrame.isMoving and GetTime() - self.Inv.LastUpdate > UpdateFreq then
       TInvFrame:UpdateWindow()
