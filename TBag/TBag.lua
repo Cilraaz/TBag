@@ -29,14 +29,23 @@ local tostring = tostring
 local GetMoney = GetMoney
 
 -- C_Container locals
-local ContainerIDToInventoryID = ContainerIDToInventoryID or (C_Container and C_Container.ContainerIDToInventoryID)
-local GetContainerItemInfo = GetContainerItemInfo or (C_Container and C_Container.GetContainerItemInfo)
-local GetContainerItemLink = GetContainerItemLink or (C_Container and C_Container.GetContainerItemLink)
-local GetContainerItemQuestInfo = GetContainerItemQuestInfo or (C_Container and C_Container.GetContainerItemQuestInfo)
-local GetContainerNumFreeSlots = GetContainerNumFreeSlots or (C_Container and C_Container.GetContainerNumFreeSlots)
-local GetContainerNumSlots = GetContainerNumSlots or (C_Container and C_Container.GetContainerNumSlots)
-local PickupContainerItem = PickupContainerItem or (C_Container and C_Container.PickupContainerItem)
-local SplitContainerItem = SplitContainerItem or (C_Container and C_Container.SplitContainerItem)
+local ContainerIDToInventoryID  = C_Container.ContainerIDToInventoryID
+local GetContainerItemInfo      = C_Container.GetContainerItemInfo
+local GetContainerItemLink      = C_Container.GetContainerItemLink
+local GetContainerItemQuestInfo = C_Container.GetContainerItemQuestInfo
+local GetContainerNumFreeSlots  = C_Container.GetContainerNumFreeSlots
+local GetContainerNumSlots      = C_Container.GetContainerNumSlots
+local PickupContainerItem       = C_Container.PickupContainerItem
+local SplitContainerItem        = C_Container.SplitContainerItem
+
+-- C_Item locals
+local GetDetailedItemLevelInfo  = C_Item.GetDetailedItemLevelInfo
+local GetItemFamily             = C_Item.GetItemFamily
+local GetItemID                 = C_Item.GetItemID
+--local GetItemIcon               = C_Item.GetItemIcon
+local GetItemInfo               = C_Item.GetItemInfo
+local GetItemName               = C_Item.GetItemName
+local GetItemQualityColor       = C_Item.GetItemQualityColor
 
 TBag.VERSION = GetAddOnMetadata("TBag", "Version")
 if TBag.VERSION  == "\64project-version\64" then
