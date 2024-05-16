@@ -352,14 +352,17 @@ function TBag:EnableLine(frame, optsframename, lineheight, sliderheight, element
       elseif (e["type"] == "Text") then
         tmpframe:SetText(e["text"])
         if (e["align"] ~= nil) then
-          tmpframe:SetJustifyH(e["align"]); -- valid values: LEFT, RIGHT,  CENTER?
+          tmpframe:SetJustifyH(e["align"]); -- valid values: LEFT, RIGHT, CENTER
         else
           tmpframe:SetJustifyH("LEFT")
         end
         if (e["alignv"] ~= nil) then
-          tmpframe:SetJustifyV(e["alignv"]); -- valid values: TOP, BOTTOM,  CENTER?
+          local alignv = e["alignv"]
+          -- Safety against "CENTER" being passed to SetJustifyV.
+          if alignv == "CENTER" then alignv = "MIDDLE" end
+          tmpframe:SetJustifyV(alignv); -- valid values: TOP, BOTTOM, MIDDLE
         else
-          tmpframe:SetJustifyV("CENTER")
+          tmpframe:SetJustifyV("MIDDLE")
         end
         if (e["color"] ~= nil) then
           --tmpframe:SetVertexColor(e["color"][1], e["color"][2], e["color"][3], fade)
