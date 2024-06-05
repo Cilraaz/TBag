@@ -9,9 +9,9 @@ function TBag:VARIABLES_LOADED()
   self:RegisterEvent("BAG_UPDATE_COOLDOWN")
   self:RegisterEvent("ITEM_LOCK_CHANGED")
   self:RegisterEvent("UNIT_INVENTORY_CHANGED")
-  self:RegisterEvent("PLAYER_LEAVING_WORLD")
+  self:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
+  self:RegisterEvent("TRADE_CURRENCY_CHANGED")
   self:RegisterEvent("MAIL_INBOX_UPDATE")
-  self:RegisterEvent("TRADE_SKILL_SHOW")
   self:RegisterEvent("AUCTION_HOUSE_SHOW")
   self:RegisterEvent("MAIL_SHOW")
   self:RegisterEvent("MERCHANT_SHOW")
@@ -26,6 +26,7 @@ function TBag:VARIABLES_LOADED()
   self:RegisterEvent("QUEST_ACCEPTED")
   self:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
   self:RegisterEvent("PLAYER_ENTERING_WORLD")
+  self:RegisterEvent("PLAYER_LEAVING_WORLD")
 
   -- Scan equipment on login.
   TBag:ScanEquipped()
@@ -82,13 +83,12 @@ function TBag:ITEM_LOCK_CHANGED(event, bag, slot)
   end
 end
 
-function TBag:UIFRAME_SHOW()
-  TInvFrame:Show()
+function TBag:CURRENCY_DISPLAY_UPDATE(...)
+  TBag.Tokens.ScanAndUpdate()
 end
 
-function TBag:PLAYER_LEAVING_WORLD()
-  TBagInfo[TBag.PLAYERID][TBag.G_BASIC][TBag.S_HEARTH] = GetBindLocation()
-  TBagInfo[TBag.PLAYERID][TBag.G_BASIC][TBag.S_LEVEL] = UnitLevel("player")
+function TBag:UIFRAME_SHOW()
+  TInvFrame:Show()
 end
 
 function TBag:BANKFRAME_OPENED()
@@ -129,18 +129,24 @@ function TBag:PLAYER_ENTERING_WORLD(event)
   self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
+function TBag:PLAYER_LEAVING_WORLD()
+  TBagInfo[TBag.PLAYERID][TBag.G_BASIC][TBag.S_HEARTH] = GetBindLocation()
+  TBagInfo[TBag.PLAYERID][TBag.G_BASIC][TBag.S_LEVEL] = UnitLevel("player")
+end
+
 
 local events = {
   ["VARIABLES_LOADED"] = TBag.VARIABLES_LOADED,
   ["BAG_UPDATE"] = TBag.BAG_UPDATE,
   ["BAG_UPDATE_COOLDOWN"] = TBag.BAG_UPDATE_COOLDOWN,
   ["ITEM_LOCK_CHANGED"] = TBag.ITEM_LOCK_CHANGED,
+  ["UNIT_INVENTORY_CHANGED"] = TBag.ScanEquipped,
+  ["CURRENCY_DISPLAY_UPDATE"] = TBag.CURRENCY_DISPLAY_UPDATE,
+  ["TRADE_CURRENCY_CHANGED"] = TBag.CURRENCY_DISPLAY_UPDATE,
+  ["MAIL_INBOX_UPDATE"] = TBag.ScanMail,
   ["AUCTION_HOUSE_SHOW"] = TBag.UIFRAME_SHOW,
   ["MAIL_SHOW"] = TBag.UIFRAME_SHOW,
   ["MERCHANT_SHOW"] = TBag.UIFRAME_SHOW,
-  ["UNIT_INVENTORY_CHANGED"] = TBag.ScanEquipped,
-  ["MAIL_INBOX_UPDATE"] = TBag.ScanMail,
-  ["PLAYER_LEAVING_WORLD"] = TBag.PLAYER_LEAVING_WORLD,
   ["BANKFRAME_OPENED"] = TBag.BANKFRAME_OPENED,
   ["BANKFRAME_CLOSED"] = TBag.BANKFRAME_CLOSED,
   ["GUILDBANKFRAME_OPENED"] = TBag.UIFRAME_SHOW,
@@ -152,6 +158,7 @@ local events = {
   ["QUEST_ACCEPTED"] = TBag.QUEST_ACCEPTED,
   ["UNIT_QUEST_LOG_CHANGED"] = TBag.UNIT_QUEST_LOG_CHANGED,
   ["PLAYER_ENTERING_WORLD"] = TBag.PLAYER_ENTERING_WORLD,
+  ["PLAYER_LEAVING_WORLD"] = TBag.PLAYER_LEAVING_WORLD,
 }
 
 function TBag:OnEvent(event, ...)

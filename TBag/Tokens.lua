@@ -128,6 +128,7 @@ function Tokens.UpdateTokenButtonFromItm(button, itm, playerid)
 end
 
 function Tokens.Update(frame)
+  TBag:PrintDEBUG("TBag.Tokens.Update() running")
   local framename = frame:GetName()
   local mainFrame = frame:GetParent()
   if mainFrame.cfg.show_tokens ~= 1 then return end
@@ -148,6 +149,7 @@ function Tokens.Update(frame)
     --if i > MAX_WATCHED_TOKENS then return end
     if i > 18 then return end
   end
+  TBag:PrintDEBUG("TBag.Tokens.Update: Watching " .. tostring(TBag.Tokens.Watched) .. " tokens")
   --for n = i, MAX_WATCHED_TOKENS do
   for n = i, 18 do
     if _G[framename.."Token"..n] then
@@ -169,19 +171,11 @@ function Tokens.Button_OnEnter(self)
   GameTooltip:SetText(self.name, 1, 1, 1, 1)
 end
 
--- I really hate having to hook to do this but it would be a real mess
--- to do it otherwise since the TokenUI doesn't generate an event when
--- the tracked tokens change.
-function Tokens.Hook()
+-- Scan tokens and update our frames
+function Tokens.ScanAndUpdate()
   Tokens.Scan()
   Tokens.Update(TInvFrame_TokenFrame)
   Tokens.Update(TBnkFrame_TokenFrame)
-end
-
--- Turn on the hook, we have to delay doing this until variables
--- are loaded to avoid problems.
-function Tokens.Enable()
-  hooksecurefunc('TokenFrame_Update', Tokens.Hook)
 end
 
 TokenFramePopup.BackpackCheckBox.Text:SetText(L["Show on TBag"])

@@ -185,7 +185,6 @@ function Inv:init(reset)
   TBag.Hooks.Register(TBag.Hooks.REGISTER)
 
   -- Setup the token system
-  TBag.Tokens.Enable()
   TBag.Tokens.Scan()
 
   if (cfg["moveLock"] == 0) then
@@ -1403,21 +1402,21 @@ function Inv:UpdateWindow(resort_req)
     MoneyFrame_Update("TInvFrame_MoneyFrame", TBag:GetMoney(self.playerid))
   end
 
-    frame:ClearAllPoints()
-    frame:SetPoint(self.cfg["frameYRelativeTo"]..self.cfg["frameXRelativeTo"],
-      "UIParent", "BOTTOMLEFT",
-      self.cfg["frame"..self.cfg["frameXRelativeTo"]] / frame:GetScale(),
-      self.cfg["frame"..self.cfg["frameYRelativeTo"]] / frame:GetScale())
+  frame:ClearAllPoints()
+  frame:SetPoint(self.cfg["frameYRelativeTo"]..self.cfg["frameXRelativeTo"],
+    "UIParent", "BOTTOMLEFT",
+    self.cfg["frame"..self.cfg["frameXRelativeTo"]] / frame:GetScale(),
+    self.cfg["frame"..self.cfg["frameYRelativeTo"]] / frame:GetScale())
 
-    TBag:ColorFrame(self.cfg, frame, TBag.MAIN_BAR)
+  TBag:ColorFrame(self.cfg, frame, TBag.MAIN_BAR)
 
-    if (self.edit_mode == 1) then
-      TInvFrame_ColumnsAdd:Show()
-      TInvFrame_ColumnsDel:Show()
-    else
-      TInvFrame_ColumnsAdd:Hide()
-      TInvFrame_ColumnsDel:Hide()
-    end
+  if (self.edit_mode == 1) then
+    TInvFrame_ColumnsAdd:Show()
+    TInvFrame_ColumnsDel:Show()
+  else
+    TInvFrame_ColumnsAdd:Hide()
+    TInvFrame_ColumnsDel:Hide()
+  end
 
   self:SetButton_Anchors()
 
