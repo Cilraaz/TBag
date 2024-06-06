@@ -20,6 +20,10 @@ local GetContainerItemCooldown = GetContainerItemCooldown or (C_Container and C_
 local GetContainerItemInfo = GetContainerItemInfo or (C_Container and C_Container.GetContainerItemInfo)
 local ShowContainerSellCursor = ShowContainerSellCursor or (C_Container and C_Container.ShowContainerSellCursor)
 
+-- C_Item locals
+local GetItemIconByID = C_Item.GetItemIconByID
+local GetItemIDForItemInfo = C_Item.GetItemIDForItemInfo
+
 -- Generic itembutton implementation
 TBag.ItemButton = {}
 local ItemButton = TBag.ItemButton
@@ -259,12 +263,13 @@ function ItemButton.Update(self)
   if itemlink then
     frame_texture:SetAlpha(1)
     if itemlink:sub(1,5) == "item:" then
-      texture = GetItemIcon(itm[TBag.I_ITEMLINK])
+      local itemID = GetItemIDForItemInfo(itemlink)
+      texture = GetItemIconByID(itemID)
     elseif itemlink:sub(1,10) == "battlepet:" then
       local _, _, _, speciesID = TBag:GetItemID(itemlink)
       _, texture = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
     elseif string.find(itemlink, "keystone") then
-      texture = GetItemIcon(158923)
+      texture = GetItemIconByID(158923)
     end
   else
     if cfg.show_bag_icons == 1 then

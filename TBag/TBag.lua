@@ -28,6 +28,10 @@ local tostring = tostring
 -- Blizzard function locals
 local GetMoney = GetMoney
 
+-- C_AddOns locals
+local GetAddOnMetadata          = C_AddOns.GetAddOnMetadata
+local LoadAddOn                 = C_AddOns.LoadAddOn
+
 -- C_Container locals
 local ContainerIDToInventoryID  = C_Container.ContainerIDToInventoryID
 local GetContainerItemInfo      = C_Container.GetContainerItemInfo
@@ -42,7 +46,8 @@ local SplitContainerItem        = C_Container.SplitContainerItem
 local GetDetailedItemLevelInfo  = C_Item.GetDetailedItemLevelInfo
 local GetItemFamily             = C_Item.GetItemFamily
 local GetItemID                 = C_Item.GetItemID
---local GetItemIcon               = C_Item.GetItemIcon
+local GetItemIDForItemInfo      = C_Item.GetItemIDForItemInfo
+local GetItemIconByID           = C_Item.GetItemIconByID
 local GetItemInfo               = C_Item.GetItemInfo
 local GetItemName               = C_Item.GetItemName
 local GetItemQualityColor       = C_Item.GetItemQualityColor
@@ -1605,8 +1610,11 @@ function TBag:GetBagTexture(playerid, bag)
     texture = "Interface\\Icons\\INV_Misc_Bag_SatchelofCenarius.blp"
   else
     local itemlink = self:GetPlayerBagCfg(playerid, bag, self.I_ITEMLINK)
-    if (itemlink) then
-      texture = GetItemIcon(itemlink)
+    if itemlink then
+      local itemID = GetItemIDForItemInfo(itemlink)
+    end
+    if itemID then
+      texture = GetItemIconByID(itemID)
     else
       texture = "interface\\paperdoll\\UI-PaperDoll-Slot-Bag"
     end
