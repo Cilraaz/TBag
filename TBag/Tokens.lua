@@ -178,5 +178,9 @@ function Tokens.ScanAndUpdate()
   Tokens.Update(TBnkFrame_TokenFrame)
 end
 
-TokenFramePopup.BackpackCheckbox.Text:SetText(L["Show on TBag"])
+if TokenFramePopup.BackpackCheckbox then
+  TokenFramePopup.BackpackCheckbox.Text:SetText(L["Show on TBag"])
+else
+  TokenFramePopup.BackpackCheckBox.Text:SetText(L["Show on TBag"])
+end
 TOKEN_SHOW_ON_BACKPACK = L["Checking this option will allow you to track this currency type in TBag for this character.\n\nYou can also Shift-click a currency to add or remove it from being tracked in TBag."]
